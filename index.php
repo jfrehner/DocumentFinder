@@ -8,7 +8,7 @@ $path = realpath(SVN_PATH);
 $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
 foreach($objects as $name => $object){
     if(strpos($name, "/.") == false && strpos($name, ".js") == false && strpos($name, ".css") == false
-        && strpos($name, ".html") == false && strpos($name, ".png") == false
+        && strpos($name, ".png") == false
         && strpos($name, ".svg") == false && strpos($name, ".gif") == false
         && strpos($name, ".php") == false && strpos($name, ".jpg") == false
         && strpos($name, "~") == false) {
@@ -16,8 +16,8 @@ foreach($objects as $name => $object){
         $content = "";
 
         if (strpos($name, ".docx")) {
-            $content = read_doc($name);
-        } elseif (strpos($name, ".php")) {
+            $content = read_docx($name);
+        } elseif (strpos($name, ".doc")) {
             $content = read_doc($name);
         }
 
@@ -45,7 +45,6 @@ function read_doc($filename) {
 
 function read_docx($filename){
 
-    $striped_content = '';
     $content = '';
 
     $zip = zip_open($filename);
@@ -78,7 +77,24 @@ function read_docx($filename){
         angular.module('myApp', [])
             .controller('FileViewer', function($scope) {
                 $scope.files = <?php echo json_encode($files) ?>;
-                $scope.data = {search:""};
+                $scope.data = {
+                    search: ""
+                };
+                $scope.options = {
+                    includeAll: false
+                };
+                $scope.extensionFilter = function(file) {
+                    return !$scope.options.includeAll
+                        ? file.extension === 'docx'
+                    || file.extension === 'doc'
+                    || file.extension === 'xlsx'
+                    || file.extension === 'xls'
+                    || file.extension === 'pptx'
+                    || file.extension === 'ppt'
+                    || file.extension === 'pdf'
+                    || file.extension === 'txt'
+                        : true;
+                };
                 $scope.getIcon = function(extension) {
                     var file = '';
                     if (extension === 'xlsx' || extension === 'xls') file = 'fa-file-excel-o excelColor';
@@ -105,7 +121,7 @@ function read_docx($filename){
             font-size: 45px;
             padding-top: 50px;
         }
-        input {
+        input[type="text"] {
             margin-bottom: 50px;
             width: 100%;
             font-size: 30px;
@@ -114,6 +130,9 @@ function read_docx($filename){
             padding-left: 10px;
             border: none;
             background-color: #E1F6FE ;
+        }
+        input[type="checkbox"] {
+            margin-right: 10px;
         }
         .wrapper {
             width: 900px;
@@ -146,6 +165,7 @@ function read_docx($filename){
         .container {
             width: 800px;
             margin: 0 auto;
+            margin-bottom: 20px;
         }
         .wordColor {
             color:#3e5ba9;
@@ -170,10 +190,11 @@ function read_docx($filename){
     <div class="container">
         <h1>Realtime-Document Search</h1>
         <input type="text" ng-model="data.search" placeholder="Enter a Documentname">
+        <input type="checkbox" ng-model="options.includeAll" id="uncommon"/><label for="uncommon">Include uncommon</label>
     </div>
     <div class="container">
         <ul>
-            <li ng-repeat="file in files | filter: data.search track by $index">
+            <li ng-repeat="file in files | filter:extensionFilter | filter: data.search track by $index">
                 <i class="fa" ng-class="getIcon(file.extension)"></i>
                 <a href="file://{{file.path}}">{{ file.filename }}</a>
             </li>
