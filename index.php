@@ -75,13 +75,16 @@ function read_docx($filename){
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <script type="text/javascript">
         angular.module('myApp', [])
-            .controller('FileViewer', function($scope) {
+            .controller('FileViewer', function($scope, $sce) {
+                $scope.documentRoot = "/Applications/XAMPP/xamppfiles/htdocs/<?php echo SVN_PATH; ?>";
                 $scope.files = <?php echo json_encode($files) ?>;
                 $scope.data = {
                     search: ""
                 };
                 $scope.options = {
-                    includeAll: false
+                    includeAll: false,
+                    showPreview: true,
+                    showPath: true
                 };
                 $scope.extensionFilter = function(file) {
                     return !$scope.options.includeAll
@@ -103,6 +106,49 @@ function read_docx($filename){
                     if (extension === 'pdf') file = 'fa-file-pdf-o pdfColor';
                     if (extension === 'txt') file = 'fa-file-text-o txtColor';
                     return file;
+                };
+                $scope.displayContent = function(file) {
+                    if ($scope.data.search.length > 0 && $scope.options.showPreview) {
+                        var area = 20;
+                        var content = file.content;
+                        var output = "";
+                        var occurances = $scope.findOccurances(file);
+                        for (var x = 0; x < occurances; x++) {
+                            var pos = content.toLowerCase().indexOf($scope.data.search.toLowerCase());
+                            output += nl2br(highlight(content.slice(pos-area,pos+area), $scope.data.search)) + "<br />---<br />";
+                            content = content.slice(pos+1);
+                        }
+                        return $sce.trustAsHtml(output);
+                    }
+                };
+                $scope.findOccurances = function(file) {
+                    var string = file.content.toLowerCase();
+                    var subString = $scope.data.search.toLowerCase();
+
+                    if(subString.length<=0) return string.length+1;
+
+                    var n=0, pos=0;
+                    var step=subString.length;
+
+                    while(true){
+                        pos=string.indexOf(subString,pos);
+                        if(pos>=0){ n++; pos+=step; } else break;
+                    }
+                    return(n);
+                };
+                function nl2br (str) {
+                    return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br />$2');
+                }
+                function preg_quote(str, delimiter) {
+                    return String(str)
+                        .replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\' + (delimiter || '') + '-]', 'g'), '\\$&');
+                }
+                function highlight(data, search)
+                {
+                    return data.replace( new RegExp( "(" + preg_quote( search ) + ")" , 'gi' ), "<strong style='color:#FF0000'>$1</strong>" );
+                }
+                $scope.getPath = function(file) {
+                    return file.path.slice($scope.documentRoot.length, -(file.filename.length + file.extension.length + 1));
                 }
             });
     </script>
@@ -182,6 +228,14 @@ function read_docx($filename){
         .txtColor {
             color:#000000;
         }
+        .resultContent {
+            color:#888888;
+            font-size: small;
+        }
+        .path {
+            color:#888888;
+            font-size: smaller;
+        }
 
     </style>
 </head>
@@ -191,12 +245,16 @@ function read_docx($filename){
         <h1>Realtime-Document Search</h1>
         <input type="text" ng-model="data.search" placeholder="Enter a Documentname">
         <input type="checkbox" ng-model="options.includeAll" id="uncommon"/><label for="uncommon">Include uncommon</label>
+        <input type="checkbox" ng-model="options.searchInContent" id="searchInContent"/><label for="searchInContent">Search in content</label>
+        <input type="checkbox" ng-model="options.showPreview" id="showPreview"/><label for="showPreview">Show Preview</label>
+        <input type="checkbox" ng-model="options.showPath" id="showPath"/><label for="showPath">Show Path</label>
     </div>
     <div class="container">
         <ul>
-            <li ng-repeat="file in files | filter:extensionFilter | filter: data.search track by $index">
+            <li ng-repeat="file in files | filter:extensionFilter | filter: options.searchInContent ? data.search : {filename:data.search} track by $index">
                 <i class="fa" ng-class="getIcon(file.extension)"></i>
-                <a href="file://{{file.path}}">{{ file.filename }}</a>
+                <a href="file://{{file.path}}"><span ng-if="options.searchInContent && data.search.length > 0">({{ findOccurances(file) }})</span> {{ file.filename }} <span ng-show="options.showPath" class="path">{{ getPath(file) }}</span></a>
+                <div ng-if="options.searchInContent && data.search.length > 0" class="resultContent" ng-bind-html="displayContent(file)"></div>
             </li>
         </ul>
     </div>
