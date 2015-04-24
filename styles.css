@@ -1,9 +1,16 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+GENERAL STYLES
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 * {
     margin: 0;
     padding: 0;
     font-family: "Open Sans";
 }
 
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+TEXT STYLES
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 h1 {
     position: relative;
     text-align: center;
@@ -12,6 +19,20 @@ h1 {
     padding-top: 50px;
 }
 
+a {
+    text-decoration: none;
+    color: black;
+    font-weight: 300;
+    display: inline-block;
+}
+a:hover .path {
+    color: white;
+}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+STYLE INPUT SEARCH-BOX (INCLUDING ANIMATION)
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #inputWrapper:before {
     content: "";
     position: absolute;
@@ -22,7 +43,7 @@ h1 {
     background-color: red;
     transform: scaleX(0);
     transition: all 0.3s ease-in-out 0s;
-    visibility: visible;
+    visibility: hidden;
 }
 
 #inputWrapper {
@@ -53,6 +74,10 @@ input[type="checkbox"] {
     margin-right: 10px;
 }
 
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+WRAPPER STYLES
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 .wrapper {
     width: 900px;
     margin: 0 auto;
@@ -63,10 +88,32 @@ input[type="checkbox"] {
     position: relative;
 }
 
+.container {
+    width: 800px;
+    margin: 0 auto;
+    margin-bottom: 20px;
+}
+
+.path {
+    color:#888888;
+    font-size: smaller;
+}
+
+.content {
+    position: relative;
+    width: 80%;
+    float: right;
+}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+LIST STYLES
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 li {
     list-style-type: none;
     border-top: 1px solid black;
     font-size: 20px;
+    padding: 0;
 }
 
 li:hover {
@@ -77,24 +124,18 @@ li:hover a, li:hover i {
     color: white;
 }
 
-a {
-    text-decoration: none;
-    color: black;
-    font-weight: 300;
-    display: inline-block;
-    padding: 10px;
-}
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+ICON STYLES
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 i {
     padding-left: 5px;
     display: inline;
     width: 5%;
 }
 
-.container {
-    width: 800px;
-    margin: 0 auto;
-    margin-bottom: 20px;
+.fa {
+    font-size: 20px;
 }
 
 .wordColor {
@@ -122,13 +163,17 @@ i {
     font-size: small;
 }
 
-.path {
-    color:#888888;
-    font-size: smaller;
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+TABLE STYLES
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+table {
+    padding: 0;
+    margin: 0;
+    margin-top: 5px;
 }
 
-.content {
-    position: relative;
-    width: 80%;
-    float: right;
+td {
+    vertical-align: top;
+    padding-right: 8px;
 }

@@ -170,15 +170,34 @@ function read_docx($filename){
     <div class="container">
         <ul>
             <li ng-repeat="file in files | filter:extensionFilter | filter: options.searchInContent ? data.search : {filename:data.search} track by $index">
-                <i class="fa" ng-class="getIcon(file.extension)"></i>
-                    <a href="file://{{file.path}}">
-                        <span ng-if="options.searchInContent && data.search.length > 0">({{ findOccurances(file) }})
-                        </span> {{ file.filename }}
-                        <span ng-show="options.showPath" class="path">{{ getPath(file) }}
-                        </span>
-                    </a>
-                    <div ng-if="options.searchInContent && data.search.length > 0" class="resultContent" ng-bind-html="displayContent(file)">
-                    </div>
+                <a href="file://{{file.path}}">
+                <table>
+                    <tr>
+                        <td rowspan="2">
+                            <i class="fa" ng-class="getIcon(file.extension)"></i>
+                        </td>
+                            <td>
+                                <span ng-if="options.searchInContent && data.search.length > 0">
+                                    ({{ findOccurances(file) }})
+                                </span>
+                                    {{ file.filename }}
+                            </td>
+                    </tr>
+                    <tr>
+                            <td>
+                                <span ng-show="options.showPath" class="path">
+                                    {{ getPath(file) }}
+                                </span>
+                            </td>
+                    </tr>
+                    <tr>
+                            <td>
+                                <div ng-if="options.searchInContent && data.search.length > 0" class="resultContent" ng-bind-html="displayContent(file)">
+                                </div>
+                            </td>
+                    <tr>
+                </table>
+                </a>
             </li>
         </ul>
     </div>
