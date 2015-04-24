@@ -2,6 +2,13 @@
 
 require_once 'config/config.php';
 
+// https://blog.mayflower.de/561-Import-and-export-data-using-PHPExcel.html
+require_once 'Classes/PHPExcel.php';
+
+require_once 'vendor/autoload.php';
+
+$parser = new \Smalot\PdfParser\Parser();
+
 $files = [];
 
 $path = realpath(SVN_PATH);
@@ -19,6 +26,34 @@ foreach($objects as $name => $object){
             $content = read_docx($name);
         } elseif (strpos($name, ".doc")) {
             $content = read_doc($name);
+        } elseif (strpos($name, ".xlsx")) {
+            $objPHPExcel = PHPExcel_IOFactory::load($name);
+            foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
+                $worksheetTitle     = $worksheet->getTitle();
+                $highestRow         = $worksheet->getHighestRow(); // e.g. 10
+                $highestColumn      = $worksheet->getHighestColumn(); // e.g 'F'
+                $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
+                $nrColumns = ord($highestColumn) - 64;
+                $content .= "<br>The worksheet ".$worksheetTitle." has ";
+                $content .= $nrColumns . ' columns (A-' . $highestColumn . ') ';
+                $content .= ' and ' . $highestRow . ' row.';
+                $content .= '<br>Data: <table border="1"><tr>';
+                for ($row = 1; $row <= $highestRow; ++ $row) {
+                    $content .= '<tr>';
+                    for ($col = 0; $col < $highestColumnIndex; ++ $col) {
+                        $cell = $worksheet->getCellByColumnAndRow($col, $row);
+                        $val = $cell->getValue();
+                        $dataType = PHPExcel_Cell_DataType::dataTypeForValue($val);
+                        $content .= '<td>' . $val . '</td>';
+                    }
+                    $content .= '</tr>';
+                }
+                $content .= '</table>';
+                $content = strip_tags($content);
+            }
+        } elseif (strpos($name, ".pdf")) {
+            $pdf = $parser->parseFile($name);
+            //$content = $pdf->getText();
         }
 
         array_push($files, array("filename" => pathinfo($name, PATHINFO_FILENAME), "extension" => pathinfo($name, PATHINFO_EXTENSION), "path" => $name, "content" => $content));
