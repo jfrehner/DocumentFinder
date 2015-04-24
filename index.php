@@ -159,7 +159,9 @@ function read_docx($filename){
 <div class="wrapper">
     <div class="container">
         <h1>Realtime-Document Search</h1>
-        <input type="text" ng-model="data.search" placeholder="Enter a Documentname">
+        <span id="inputWrapper">
+            <input type="text" ng-model="data.search" placeholder="Enter a Documentname">
+        </span>
         <input type="checkbox" ng-model="options.includeAll" id="uncommon"/><label for="uncommon">Include uncommon</label>
         <input type="checkbox" ng-model="options.searchInContent" id="searchInContent"/><label for="searchInContent">Search in content</label>
         <input type="checkbox" ng-model="options.showPreview" id="showPreview"/><label for="showPreview">Show Preview</label>
@@ -169,8 +171,14 @@ function read_docx($filename){
         <ul>
             <li ng-repeat="file in files | filter:extensionFilter | filter: options.searchInContent ? data.search : {filename:data.search} track by $index">
                 <i class="fa" ng-class="getIcon(file.extension)"></i>
-                <a href="file://{{file.path}}"><span ng-if="options.searchInContent && data.search.length > 0">({{ findOccurances(file) }})</span> {{ file.filename }} <span ng-show="options.showPath" class="path">{{ getPath(file) }}</span></a>
-                <div ng-if="options.searchInContent && data.search.length > 0" class="resultContent" ng-bind-html="displayContent(file)"></div>
+                    <a href="file://{{file.path}}">
+                        <span ng-if="options.searchInContent && data.search.length > 0">({{ findOccurances(file) }})
+                        </span> {{ file.filename }}
+                        <span ng-show="options.showPath" class="path">{{ getPath(file) }}
+                        </span>
+                    </a>
+                    <div ng-if="options.searchInContent && data.search.length > 0" class="resultContent" ng-bind-html="displayContent(file)">
+                    </div>
             </li>
         </ul>
     </div>
