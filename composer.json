@@ -1,12 +1,7 @@
 {
     "name": "fhnw/documentfinder",
     "require": {
-        "smalot/pdfparser": "v0.9.23"
-    },
-    "authors": [
-        {
-            "name": "Andreas Gassmann",
-            "email": "andreas@andreasgassmann.ch"
-        }
-    ]
+        "smalot/pdfparser": "0.9.*",
+        "phpoffice/phpexcel": "1.8.*"
+    }
 }

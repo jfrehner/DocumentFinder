@@ -3,7 +3,6 @@
 require_once 'config/config.php';
 
 // https://blog.mayflower.de/561-Import-and-export-data-using-PHPExcel.html
-require_once 'Classes/PHPExcel.php';
 
 require_once 'vendor/autoload.php';
 
