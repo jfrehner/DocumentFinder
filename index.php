@@ -51,11 +51,11 @@ foreach($objects as $name => $object){
                 $content = strip_tags($content);
             }
         } elseif (strpos($name, ".pdf")) {
-            $pdf = $parser->parseFile($name);
+            // $pdf = $parser->parseFile($name);
             //$content = $pdf->getText();
         }
 
-        array_push($files, array("filename" => pathinfo($name, PATHINFO_FILENAME), "extension" => pathinfo($name, PATHINFO_EXTENSION), "path" => $name, "content" => $content));
+        array_push($files, array("filename" => pathinfo($name, PATHINFO_FILENAME), "extension" => pathinfo($name, PATHINFO_EXTENSION), "path" => $name/* , "content" => $content */));
     }
 }
 
@@ -110,11 +110,14 @@ function read_docx($filename){
     <script type="text/javascript">
         angular.module('myApp', [])
             .controller('FileViewer', function($scope, $sce) {
-                $scope.documentRoot = "/Applications/XAMPP/xamppfiles/htdocs/<?php echo SVN_PATH; ?>";
+                $scope.documentRoot = "<?php echo realpath(SVN_PATH); ?>";
                 $scope.files = <?php echo json_encode($files) ?>;
                 $scope.data = {
                     search: ""
                 };
+
+                console.log($scope.documentRoot)
+
                 $scope.options = {
                     includeAll: false,
                     showPreview: true,
@@ -184,6 +187,10 @@ function read_docx($filename){
                 $scope.getPath = function(file) {
                     return file.path.slice($scope.documentRoot.length, -(file.filename.length + file.extension.length + 1));
                 }
+
+                $scope.getRole = function (path) {
+                    return path.split("/")[1].split(" ").pop()
+                }
             });
     </script>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
@@ -197,7 +204,7 @@ function read_docx($filename){
             <input type="text" ng-model="data.search" placeholder="Enter a Documentname">
         </span>
         <input type="checkbox" ng-model="options.includeAll" id="uncommon"/><label for="uncommon">Include uncommon</label>
-        <input type="checkbox" ng-model="options.searchInContent" id="searchInContent"/><label for="searchInContent">Search in content</label>
+        <!-- <input type="checkbox" ng-model="options.searchInContent" id="searchInContent"/><label for="searchInContent">Search in content</label> -->
         <input type="checkbox" ng-model="options.showPreview" id="showPreview"/><label for="showPreview">Show Preview</label>
         <input type="checkbox" ng-model="options.showPath" id="showPath"/><label for="showPath">Show Path</label>
     </div>
@@ -210,25 +217,20 @@ function read_docx($filename){
                         <td rowspan="2">
                             <i class="fa" ng-class="getIcon(file.extension)"></i>
                         </td>
-                            <td>
-                                <span ng-if="options.searchInContent && data.search.length > 0">
-                                    ({{ findOccurances(file) }})
-                                </span>
-                                    {{ file.filename }}
-                            </td>
+                        <td>
+                            <span ng-if="options.searchInContent && data.search.length > 0">({{ findOccurances(file) }})</span> {{ file.filename }}
+                        </td>
                     </tr>
                     <tr>
-                            <td>
-                                <span ng-show="options.showPath" class="path">
-                                    {{ getPath(file) }}
-                                </span>
-                            </td>
+                        <td>
+                            <span ng-show="options.showPath" class="path"><span data-role="{{ getRole(getPath(file)) }}" class="role">{{ getRole(getPath(file)) }}</span> {{ getPath(file) }}</span>
+                        </td>
                     </tr>
                     <tr>
-                            <td>
-                                <div ng-if="options.searchInContent && data.search.length > 0" class="resultContent" ng-bind-html="displayContent(file)">
-                                </div>
-                            </td>
+                        <td>
+                            <div ng-if="options.searchInContent && data.search.length > 0" class="resultContent" ng-bind-html="displayContent(file)">
+                            </div>
+                        </td>
                     <tr>
                 </table>
                 </a>
