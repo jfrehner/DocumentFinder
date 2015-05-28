@@ -38,7 +38,6 @@ STYLE INPUT SEARCH-BOX
     position: fixed;
     left: 10%;
     right: 0;
-    box-shadow: 0 1px 3px rgba(30, 30, 30, 0.35);
     z-index: 100;
 }
 
@@ -102,7 +101,7 @@ body::after {
     position: relative;
     width: 10%;
     float: left;
-    background-color: #fff;
+    background-color: #ededed;
     border-right: 1px solid #dadada;
     z-index: 1000;
 }
