@@ -268,3 +268,7 @@ ICON STYLES
 [data-role="MP"] {
     background-color: #EB4CEB;
 }
+
+.disabled {
+    background-color: #000055;
+}
