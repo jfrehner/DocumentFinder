@@ -58,11 +58,13 @@ STYLE INPUT SEARCH-BOX
 
 .search-options {
     display: -webkit-flex;
+    display: flex;
 }
 
 .search-options label {
     display: block;
     -webkit-flex: 1 0 auto;
+    flex: 1 0 auto;
 }
 
 .search-options [type="checkbox"] {
