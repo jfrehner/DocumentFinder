@@ -49,6 +49,7 @@ STYLE INPUT SEARCH-BOX
     font: inherit;
     font-size: 1.5em;
     border: 0;
+    border-bottom: 1px solid #dadada;
 }
 
 .search-input:focus {
@@ -58,12 +59,14 @@ STYLE INPUT SEARCH-BOX
 .search-options {
     display: -webkit-flex;
     display: flex;
+    border-bottom: 1px solid #dadada;
 }
 
 .search-options label {
     display: block;
     -webkit-flex: 1 0 auto;
     flex: 1 0 auto;
+    text-align: center;
 }
 
 .search-options [type="checkbox"] {
@@ -122,6 +125,7 @@ body::after {
 .content {
     position: relative;
     margin-top: 5.75em;
+    padding-top: 2px;
 }
 
 
