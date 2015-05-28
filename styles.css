@@ -1,12 +1,16 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 GENERAL STYLES
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 * {
     margin: 0;
     padding: 0;
-    font-family: "Open Sans";
+    box-sizing: border-box;
 }
 
+html {
+    font: 100%/1.5 "Open Sans", sans-serif;
+}
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 TEXT STYLES
@@ -25,73 +29,80 @@ a {
     font-weight: 300;
     display: inline-block;
 }
-a:hover .path {
-    color: white;
-}
-
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-STYLE INPUT SEARCH-BOX (INCLUDING ANIMATION)
+STYLE INPUT SEARCH-BOX
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-#inputWrapper:before {
-    content: "";
-    position: absolute;
+
+.input-wrapper {
+    position: fixed;
+    left: 10%;
+    right: 0;
+    box-shadow: 0 1px 3px rgba(30, 30, 30, 0.35);
+    z-index: 100;
+}
+
+.search-input {
+    display: block;
     width: 100%;
-    height: 2px;
-    bottom: -11px;
-    left: 0;
-    background-color: red;
-    transform: scaleX(0);
-    transition: all 0.3s ease-in-out 0s;
-    visibility: hidden;
+    padding: 0.5em 0.6667em;
+    margin: 0;
+    font: inherit;
+    font-size: 1.5em;
+    border: 0;
 }
 
-#inputWrapper {
-    position: relative;
+.search-input:focus {
+    outline: none;
 }
 
-input[type="text"] {
-    margin-bottom: 50px;
-    width: 100%;
-    font-size: 30px;
-    font-weight: 300;
-    padding: 5px;
-    padding-left: 10px;
-    border: none;
-    border-bottom: 1px solid black;
+.search-options {
+    display: -webkit-flex;
 }
 
-input[type="text"]:focus {
-    border-bottom: 2px solid red;
+.search-options label {
+    display: block;
+    -webkit-flex: 1 0 auto;
 }
 
-#inputWrapper:hover:before {
-    visibility: visible;
-    transform: scaleX(1);
+.search-options [type="checkbox"] {
+    display: none;
 }
 
-input[type="checkbox"] {
-    margin-right: 10px;
+.search-options .label {
+    display: block;
+    padding: 0.25em 1em;
+    background-color: #ededed;
+    cursor: pointer;
+    transition: background-color 0.25s ease-in-out, color 0.25s ease-in-out;
 }
 
+.search-options [type="checkbox"]:checked + .label {
+    color: #fff;
+    background-color: #4cadeb;
+}
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 WRAPPER STYLES
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-.wrapper {
-    width: 900px;
-    margin: 0 auto;
-    box-shadow: 1px 1px 35px 2px grey;
-    padding-bottom: 80px;
+
+body {
     overflow: hidden;
-    margin-top: 100px;
-    position: relative;
 }
 
-.container {
-    width: 800px;
-    margin: 0 auto;
-    margin-bottom: 20px;
+body::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.sidebar {
+    position: relative;
+    width: 10%;
+    float: left;
+    background-color: #fff;
+    border-right: 1px solid #dadada;
+    z-index: 1000;
 }
 
 .path {
@@ -99,39 +110,80 @@ WRAPPER STYLES
     font-size: smaller;
 }
 
+.content-wrapper {
+    width: 90%;
+    height: 100%;
+    float: right;
+    position: relative;
+    overflow: scroll;
+}
+
 .content {
     position: relative;
-    width: 80%;
-    float: right;
+    margin-top: 5.75em;
 }
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 LIST STYLES
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-li {
-    list-style-type: none;
-    border-top: 1px solid black;
-    font-size: 20px;
-    padding: 0;
+.unstyled-list {
+    list-style: none;
+    padding-left: 0;
 }
 
-li:hover {
-    background-color: #3A98FE ;
+.roles-list li {
+    position: relative;
+    height: 14.2857vh;
 }
 
-li:hover a, li:hover i {
-    color: white;
+.files-list li:first-child {
+    border-top: 0;
 }
 
+.files-list li {
+    position: relative;
+    border-top: 1px solid #dadada;
+    transition: background-color 0.25s ease-in-out;
+}
+
+.files-list li::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.files-list a {
+    display: block;
+    height: 3.75em;
+}
+
+.files-list [data-role] {
+    right: 0.5em;
+    left: auto;
+    margin-left: 0;
+    font-size: 1em;
+}
+
+.files-list li:hover {
+    background-color: rgba(76, 173, 235, 0.35);
+}
+
+.file-name {
+    padding-top: 0.5em;
+}
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 ICON STYLES
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-i {
-    padding-left: 5px;
-    display: inline;
-    width: 5%;
+
+.icon {
+    display: block;
+    height: 3em;
+    width: 3em;
+    float: left;
+    text-align: center;
+    line-height: 3em;
 }
 
 .fa {
@@ -163,30 +215,25 @@ i {
     font-size: small;
 }
 
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-TABLE STYLES
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-table {
-    padding: 0;
-    margin: 0;
-    margin-top: 5px;
-}
-
-td {
-    vertical-align: top;
-    padding-right: 8px;
-}
-
 /**
  * LABELS
  */
 
 [data-role] {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 3em;
+    width: 3em;
     padding: 0.25em 0.5em;
-    margin-right: 0.25em;
+    margin-right: 0;
+    margin-top: -1.5em;
+    margin-left: -1.5em;
+    font-size: 1.25em;
+    line-height: 2.5;
+    text-align: center;
     color: #fff;
-    border-radius: 5px;
+    border-radius: 100%;
 }
 
 [data-role="IM"] {

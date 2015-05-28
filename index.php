@@ -116,8 +116,6 @@ function read_docx($filename){
                     search: ""
                 };
 
-                console.log($scope.documentRoot)
-
                 $scope.options = {
                     includeAll: false,
                     showPreview: true,
@@ -196,48 +194,49 @@ function read_docx($filename){
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
-<body >
-<div class="wrapper">
-    <div class="container">
-        <h1>Realtime-Document Search</h1>
-        <span id="inputWrapper">
-            <input type="text" ng-model="data.search" placeholder="Enter a Documentname">
-        </span>
-        <input type="checkbox" ng-model="options.includeAll" id="uncommon"/><label for="uncommon">Include uncommon</label>
-        <!-- <input type="checkbox" ng-model="options.searchInContent" id="searchInContent"/><label for="searchInContent">Search in content</label> -->
-        <input type="checkbox" ng-model="options.showPreview" id="showPreview"/><label for="showPreview">Show Preview</label>
-        <input type="checkbox" ng-model="options.showPath" id="showPath"/><label for="showPath">Show Path</label>
-    </div>
-    <div class="container">
-        <ul>
-            <li ng-repeat="file in files | filter:extensionFilter | filter: options.searchInContent ? data.search : {filename:data.search} track by $index">
-                <a href="file://{{file.path}}">
-                <table>
-                    <tr>
-                        <td rowspan="2">
-                            <i class="fa" ng-class="getIcon(file.extension)"></i>
-                        </td>
-                        <td>
-                            <span ng-if="options.searchInContent && data.search.length > 0">({{ findOccurances(file) }})</span> {{ file.filename }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span ng-show="options.showPath" class="path"><span data-role="{{ getRole(getPath(file)) }}" class="role">{{ getRole(getPath(file)) }}</span> {{ getPath(file) }}</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div ng-if="options.searchInContent && data.search.length > 0" class="resultContent" ng-bind-html="displayContent(file)">
-                            </div>
-                        </td>
-                    <tr>
-                </table>
-                </a>
-            </li>
+<body>
+    <div class="sidebar">
+        <ul class="unstyled-list roles-list">
+            <li><span data-role="IM">IM</span></li>
+            <li><span data-role="MP">MP</span></li>
+            <li><span data-role="QS">QS</span></li>
+            <li><span data-role="RE">RE</span></li>
+            <li><span data-role="USE">USE</span></li>
+            <li><span data-role="ST">ST</span></li>
+            <li><span data-role="SA">SA</span></li>
         </ul>
     </div>
-</div>
-
+    <div class="content-wrapper">
+        <div class="input-wrapper">
+            <input class="search-input" type="text" ng-model="data.search" placeholder="Enter a document name">
+            <div class="search-options">
+                <label for="uncommon">
+                    <input type="checkbox" ng-model="options.includeAll" id="uncommon"/><span class="label">Include uncommon</span>
+                </label>
+                <label for="searchInContent">
+                    <input type="checkbox" ng-model="options.searchInContent" id="searchInContent"/><span class="label">Search in content</span>
+                </label>
+                <label for="showPreview">
+                    <input type="checkbox" ng-model="options.showPreview" id="showPreview"/><span class="label">Show Preview</span>
+                </label>
+                <label for="showPath">
+                    <input type="checkbox" ng-model="options.showPath" id="showPath"/><span class="label">Show Path</span>
+                </label>
+            </div>
+        </div>
+        <div class="content">
+            <ul class="files-list unstyled-list">
+                <li ng-repeat="file in files | filter:extensionFilter | filter: options.searchInContent ? data.search : {filename:data.search} track by $index">
+                    <a href="file://{{file.path}}">
+                        <span class="icon fa" ng-class="getIcon(file.extension)"></span>
+                        <div ng-if="options.searchInContent && data.search.length > 0">({{ findOccurances(file) }})</div>
+                        <div class="file-name">{{ file.filename }}</div>
+                        <div ng-show="options.showPath" class="path">{{ getPath(file) }}</span><span data-role="{{ getRole(getPath(file)) }}" class="role">{{ getRole(getPath(file)) }}</div>
+                        <div ng-if="options.searchInContent && data.search.length > 0" class="resultContent" ng-bind-html="displayContent(file)"></div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </body>
 </html>
