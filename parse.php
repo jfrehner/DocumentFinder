@@ -16,13 +16,18 @@ $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
 $excludes = [
     '7 Hauptordner SC/',
     '.svn/',
-    '.js',
-    '.css',
-    '.svg',
-    '.php',
-    '.gif',
-    '.jpg',
     '~'
+];
+
+$allowedFileTypes = [
+    'docx',
+    'doc',
+    'xlsx',
+    'xls',
+    'pptx',
+    'ppt',
+    'pdf',
+    'txt'
 ];
 
 foreach ($objects as $name => $object){
@@ -34,17 +39,22 @@ foreach ($objects as $name => $object){
         }
     }
 
-    if ($excludeItem) {
+    $tmp = explode('/', $name);
+    $fileName = end($tmp);
+    $tmp = explode('.', $fileName);
+    $fileType = end($tmp);
+
+    if ($excludeItem || !in_array($fileType, $allowedFileTypes)) {
         continue;
     }
 
     $content = "";
 
-    if (strpos($name, ".docx")) {
+    if ($fileType == 'docx')) {
         $content = read_docx($name);
-    } elseif (strpos($name, ".doc")) {
+    } elseif ($fileType == 'doc')) {
         $content = read_doc($name);
-    } elseif (strpos($name, ".xlsx")) {
+    } elseif ($fileType == 'xlsx')) {
         $objPHPExcel = PHPExcel_IOFactory::load($name);
         foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
             $worksheetTitle     = $worksheet->getTitle();
@@ -69,7 +79,7 @@ foreach ($objects as $name => $object){
             $content .= '</table>';
             $content = strip_tags($content);
         }
-    } elseif (strpos($name, ".pdf")) {
+    } elseif ($fileType == 'pdf')) {
         // $pdf = $parser->parseFile($name);
         //$content = $pdf->getText();
     }

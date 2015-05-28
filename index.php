@@ -20,23 +20,9 @@ $files = file_get_contents('data.json', true);
                 };
 
                 $scope.options = {
-                    includeAll: false,
                     showPreview: true,
                     showPath: true
                 };
-
-                $scope.extensionFilter = function(file) {
-                    return !$scope.options.includeAll
-                        ? file.extension === 'docx'
-                    || file.extension === 'doc'
-                    || file.extension === 'xlsx'
-                    || file.extension === 'xls'
-                    || file.extension === 'pptx'
-                    || file.extension === 'ppt'
-                    || file.extension === 'pdf'
-                    || file.extension === 'txt'
-                        : true;
-                }
 
                 $scope.getIcon = function (extension) {
                     var file = ''
@@ -135,9 +121,6 @@ $files = file_get_contents('data.json', true);
         <div class="input-wrapper">
             <input class="search-input" type="text" ng-model="data.search" placeholder="Enter a document name">
             <div class="search-options">
-                <label for="uncommon">
-                    <input type="checkbox" ng-model="options.includeAll" id="uncommon"/><span class="label">Include uncommon</span>
-                </label>
                 <label for="searchInContent">
                     <input type="checkbox" ng-model="options.searchInContent" id="searchInContent"/><span class="label">Search in content</span>
                 </label>
@@ -151,7 +134,7 @@ $files = file_get_contents('data.json', true);
         </div>
         <div class="content">
             <ul class="files-list unstyled-list">
-                <li ng-repeat="file in files | filter:extensionFilter | filter: options.searchInContent ? data.search : {filename:data.search} track by $index">
+                <li ng-repeat="file in files | filter: options.searchInContent ? data.search : {filename:data.search} track by $index">
                     <a href="file://{{file.path}}">
                         <span class="icon fa" ng-class="getIcon(file.extension)"></span>
                         <div ng-if="options.searchInContent && data.search.length > 0">({{ findOccurances(file) }})</div>
