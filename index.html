@@ -5,192 +5,191 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <script src="data.js"></script>
     <script>
-        angular.module('myApp', [])
-            .controller('FileViewer', function ($scope, $sce) {
-                $scope.documentRoot = documentRoot;
-                $scope.files = files;
-                $scope.data = {
-                    search: ''
-                };
+        angular.module('myApp', []).controller('FileViewer', function ($scope, $sce) {
+            $scope.documentRoot = documentRoot;
+            $scope.files = files;
+            $scope.data = {
+                search: ''
+            };
 
-                $scope.options = {
-                    caseSensitive: false,
-                    searchInContent: true,
-                    folders: {
-                        im: true,
-                        mp: true,
-                        qs: true,
-                        re: true,
-                        use: true,
-                        st: true,
-                        sa: true
-                    }
-                };
+            $scope.options = {
+                caseSensitive: false,
+                searchInContent: true,
+                folders: {
+                    im: true,
+                    mp: true,
+                    qs: true,
+                    re: true,
+                    use: true,
+                    st: true,
+                    sa: true
+                }
+            };
 
-                $scope.getIcon = function (extension) {
-                    var file = ''
+            $scope.getIcon = function (extension) {
+                var file = ''
 
-                    switch (extension) {
-                        case 'xlsx': case 'xls':
-                            file = 'fa-file-excel-o excelColor'
-                            break
-                        case 'docx': case 'doc':
-                            file = 'fa-file-word-o wordColor'
-                            break
-                        case 'pptx': case 'ppt':
-                            file = 'fa-file-powerpoint-o powerpointColor'
-                            break
-                        case 'pdf':
-                            file = 'fa-file-pdf-o pdfColor'
-                            break
-                        case 'txt':
-                            file = 'fa-file-text-o txtColor'
-                            break
-                    }
-
-                    return file
+                switch (extension) {
+                    case 'xlsx': case 'xls':
+                        file = 'fa-file-excel-o excelColor'
+                        break
+                    case 'docx': case 'doc':
+                        file = 'fa-file-word-o wordColor'
+                        break
+                    case 'pptx': case 'ppt':
+                        file = 'fa-file-powerpoint-o powerpointColor'
+                        break
+                    case 'pdf':
+                        file = 'fa-file-pdf-o pdfColor'
+                        break
+                    case 'txt':
+                        file = 'fa-file-text-o txtColor'
+                        break
                 }
 
-                $scope.displayContent = function (file) {
-                    if ($scope.data.search.length > 0) {
-                        var area = 20;
-                        var content = file.content;
-                        var output = "";
-                        var occurances = $scope.findOccurances(file);
-                        var query = $scope.data.search
+                return file
+            }
 
-                        if (!$scope.options.caseSensitive) {
-                            query = query.toLowerCase()
-                            content = content.toLowerCase()
-                        }
-
-                        for (var x = 0; x < occurances; x++) {
-                            var pos = content.indexOf(query)
-                            output += nl2br(highlight(content.slice(pos - area, pos + area), $scope.data.search)) + '<span class="omission">&#183;&#183;&#183;</span>';
-                            content = content.slice(pos + 1);
-                        }
-
-                        return $sce.trustAsHtml(output.replace(/<span class="omission">&#183;&#183;&#183;<\/span>$/, ''));
-                    }
-                }
-
-                $scope.findOccurances = function (file) {
-                    var string = file.content
-                    var subString = $scope.data.search
-
-                    if (!$scope.options.caseSensitive) {
-                        string = string.toLowerCase()
-                        subString = subString.toLowerCase()
-                    }
-
-                    if (subString.length <= 0) {
-                        return string.length + 1;
-                    }
-
-                    var n = 0;
-                    var pos = 0;
-                    var step = subString.length;
-
-                    while (true) {
-                        pos = string.indexOf(subString, pos);
-
-                        if (pos >= 0) {
-                            n++;
-                            pos += step;
-                        } else {
-                            break;
-                        }
-                    }
-
-                    return n;
-                }
-
-                function nl2br (str) {
-                    return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br />$2');
-                }
-
-                function preg_quote (str, delimiter) {
-                    return String(str)
-                        .replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\' + (delimiter || '') + '-]', 'g'), '\\$&');
-                }
-
-                function highlight (data, search) {
-                    return data.replace(new RegExp( "(" + preg_quote(search) + ")" , 'gi'), '<strong class="match">$1</strong>');
-                }
-
-                $scope.getPath = function (file) {
-                    return file.path.slice($scope.documentRoot.length, -(file.filename.length + file.extension.length + 1));
-                }
-
-                $scope.getRole = function (path) {
-                    return path.split("/")[1].split(" ").pop()
-                }
-
-                $scope.fileFilter = function (file) {
-                    var role = $scope.getRole($scope.getPath(file));
-                    return $scope.options.folders[role.toLowerCase()]
-                }
-
-                $scope.searchFilter = function (file) {
+            $scope.displayContent = function (file) {
+                if ($scope.data.search.length > 0) {
+                    var area = 20;
+                    var content = file.content;
+                    var output = "";
+                    var occurances = $scope.findOccurances(file);
                     var query = $scope.data.search
-                    var filename = file.filename
-                    var content = file.content
 
                     if (!$scope.options.caseSensitive) {
                         query = query.toLowerCase()
-                        filename = filename.toLowerCase()
                         content = content.toLowerCase()
                     }
 
-                    if ($scope.options.searchInContent) {
-                        return filename.indexOf(query) !== -1 || content.indexOf(query) !== -1
+                    for (var x = 0; x < occurances; x++) {
+                        var pos = content.indexOf(query)
+                        output += nl2br(highlight(content.slice(pos - area, pos + area), $scope.data.search)) + '<span class="omission">&#183;&#183;&#183;</span>';
+                        content = content.slice(pos + 1);
+                    }
+
+                    return $sce.trustAsHtml(output.replace(/<span class="omission">&#183;&#183;&#183;<\/span>$/, ''));
+                }
+            }
+
+            $scope.findOccurances = function (file) {
+                var string = file.content
+                var subString = $scope.data.search
+
+                if (!$scope.options.caseSensitive) {
+                    string = string.toLowerCase()
+                    subString = subString.toLowerCase()
+                }
+
+                if (subString.length <= 0) {
+                    return string.length + 1;
+                }
+
+                var n = 0;
+                var pos = 0;
+                var step = subString.length;
+
+                while (true) {
+                    pos = string.indexOf(subString, pos);
+
+                    if (pos >= 0) {
+                        n++;
+                        pos += step;
                     } else {
-                        return filename.indexOf(query) !== -1
+                        break;
                     }
                 }
 
-                $scope.toggleRole = function (role) {
-                    var disable = false
+                return n;
+            }
 
+            function nl2br (str) {
+                return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br />$2');
+            }
+
+            function preg_quote (str, delimiter) {
+                return String(str)
+                    .replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\' + (delimiter || '') + '-]', 'g'), '\\$&');
+            }
+
+            function highlight (data, search) {
+                return data.replace(new RegExp( "(" + preg_quote(search) + ")" , 'gi'), '<strong class="match">$1</strong>');
+            }
+
+            $scope.getPath = function (file) {
+                return file.path.slice($scope.documentRoot.length, -(file.filename.length + file.extension.length + 1));
+            }
+
+            $scope.getRole = function (path) {
+                return path.split("/")[1].split(" ").pop()
+            }
+
+            $scope.fileFilter = function (file) {
+                var role = $scope.getRole($scope.getPath(file));
+                return $scope.options.folders[role.toLowerCase()]
+            }
+
+            $scope.searchFilter = function (file) {
+                var query = $scope.data.search
+                var filename = file.filename
+                var content = file.content
+
+                if (!$scope.options.caseSensitive) {
+                    query = query.toLowerCase()
+                    filename = filename.toLowerCase()
+                    content = content.toLowerCase()
+                }
+
+                if ($scope.options.searchInContent) {
+                    return filename.indexOf(query) !== -1 || content.indexOf(query) !== -1
+                } else {
+                    return filename.indexOf(query) !== -1
+                }
+            }
+
+            $scope.toggleRole = function (role) {
+                var disable = false
+
+                for (var prop in $scope.options.folders) {
+                    if (!$scope.options.folders[prop]) {
+                        disable = true
+                    }
+                }
+
+                if (disable && $scope.options.folders[role.toLowerCase()]) {
                     for (var prop in $scope.options.folders) {
-                        if (!$scope.options.folders[prop]) {
-                            disable = true
-                        }
+                        $scope.options.folders[prop] = true
                     }
-
-                    if (disable && $scope.options.folders[role.toLowerCase()]) {
-                        for (var prop in $scope.options.folders) {
-                            $scope.options.folders[prop] = true
-                        }
-                    } else {
-                        for (var prop in $scope.options.folders) {
-                            $scope.options.folders[prop] = false
-                        }
+                } else {
+                    for (var prop in $scope.options.folders) {
+                        $scope.options.folders[prop] = false
                     }
-
-                    $scope.options.folders[role.toLowerCase()] = true
                 }
 
-                $scope.showPopup = function (file, $event) {
-                    var target = $event.target
+                $scope.options.folders[role.toLowerCase()] = true
+            }
 
-                    while (target.tagName != 'A') {
-                        target = target.parentNode
-                    }
+            $scope.showPopup = function (file, $event) {
+                var target = $event.target
 
-                    target.lastElementChild.innerHTML = $scope.displayContent(file)
+                while (target.tagName != 'A') {
+                    target = target.parentNode
                 }
 
-                $scope.hidePopup = function ($event) {
-                    var target = $event.target
+                target.lastElementChild.innerHTML = $scope.displayContent(file)
+            }
 
-                    while (target.tagName != 'A') {
-                        target = target.parentNode
-                    }
+            $scope.hidePopup = function ($event) {
+                var target = $event.target
 
-                    target.lastElementChild.innerHTML = ''
+                while (target.tagName != 'A') {
+                    target = target.parentNode
                 }
-            })
+
+                target.lastElementChild.innerHTML = ''
+            }
+        })
     </script>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="styles.css">
@@ -233,5 +232,23 @@
             </ul>
         </div>
     </div>
+    <script>
+        var search = document.querySelector('.search-input')
+
+        window.addEventListener('keypress', function (e) {
+            if ((e.keyCode == 83 || e.keyCode == 115) && search != document.activeElement) {
+                e.preventDefault()
+
+                if (e.shiftKey) {
+                    search.value = ''
+                }
+
+                search.focus()
+            } else if (e.keyCode == 27 && search == document.activeElement) {
+                e.preventDefault()
+                search.blur()
+            }
+        })
+    </script>
 </body>
 </html>
