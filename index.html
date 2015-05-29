@@ -14,8 +14,8 @@
                 };
 
                 $scope.options = {
-                    searchInContent: false,
-                    showPreview: true,
+                    searchInContent: true,
+                    caseSensitive: true,
                     folders: {
                         im: true,
                         mp: true,
@@ -52,7 +52,7 @@
                 }
 
                 $scope.displayContent = function (file) {
-                    if ($scope.data.search.length > 0 && $scope.options.showPreview) {
+                    if ($scope.data.search.length > 0) {
                         var area = 20;
                         var content = file.content;
                         var output = "";
@@ -66,11 +66,11 @@
 
                         return $sce.trustAsHtml(output.replace(/<span class="omission">&#183;&#183;&#183;<\/span>$/, ''));
                     }
-                };
+                }
 
                 $scope.findOccurances = function (file) {
-                    var string = file.content.toLowerCase();
-                    var subString = $scope.data.search.toLowerCase();
+                    var string = file.content.toLowerCase()
+                    var subString = $scope.data.search.toLowerCase()
 
                     if (subString.length <= 0) {
                         return string.length + 1;
@@ -91,8 +91,8 @@
                         }
                     }
 
-                    return(n);
-                };
+                    return n;
+                }
 
                 function nl2br (str) {
                     return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br />$2');
@@ -103,12 +103,11 @@
                         .replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\' + (delimiter || '') + '-]', 'g'), '\\$&');
                 }
 
-                function highlight(data, search)
-                {
+                function highlight (data, search) {
                     return data.replace(new RegExp( "(" + preg_quote(search) + ")" , 'gi'), '<strong class="match">$1</strong>');
                 }
 
-                $scope.getPath = function(file) {
+                $scope.getPath = function (file) {
                     return file.path.slice($scope.documentRoot.length, -(file.filename.length + file.extension.length + 1));
                 }
 
@@ -163,11 +162,11 @@
         <div class="input-wrapper">
             <input class="search-input" type="text" ng-model="data.search" placeholder="Enter a document name" autofocus>
             <div class="search-options">
+                <label for="caseSensitive">
+                    <input type="checkbox" ng-model="options.caseSensitive" id="caseSensitive"><span class="label">Case sensitive</span>
+                </label>
                 <label for="searchInContent">
                     <input type="checkbox" ng-model="options.searchInContent" id="searchInContent"><span class="label">Search in content</span>
-                </label>
-                <label for="showPreview">
-                    <input type="checkbox" ng-model="options.showPreview" id="showPreview"><span class="label">Show Preview</span>
                 </label>
             </div>
         </div>
@@ -179,7 +178,7 @@
                         <div class="file-name">{{ file.filename }} <span ng-if="options.searchInContent && data.search.length > 0">({{ findOccurances(file) }})</span></div>
                         <div class="path">{{ getPath(file) }}</span></div>
                         <span data-role="{{ getRole(getPath(file)) }}" class="role">{{ getRole(getPath(file)) }}</span>
-                        <div ng-if="options.searchInContent && data.search.length > 0 && options.showPreview" class="resultContent" ng-bind-html="displayContent(file)"></div>
+                        <div ng-if="options.searchInContent && data.search.length > 0" class="resultContent" ng-bind-html="displayContent(file)"></div>
                     </a>
                 </li>
             </ul>

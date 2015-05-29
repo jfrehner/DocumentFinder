@@ -37,6 +37,7 @@ STYLE INPUT SEARCH-BOX
 .input-wrapper {
     position: fixed;
     left: 10%;
+    top: 0;
     right: 0;
     z-index: 100;
 }
@@ -129,16 +130,11 @@ body::after {
 
 .content-wrapper {
     width: 90%;
-    height: 100%;
+    height: calc(100% - 5.75em);
     float: right;
     position: relative;
     overflow: scroll;
-}
-
-.content {
-    position: relative;
     margin-top: 5.75em;
-    padding-top: 2px;
 }
 
 
