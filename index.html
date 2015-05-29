@@ -1,20 +1,14 @@
-<?php
-
-require_once 'config/config.php';
-$files = file_get_contents('data.json', true);
-
-?>
-
 <html ng-app="myApp" ng-controller="FileViewer">
 <head>
     <title></title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <script src="data.js"></script>
     <script type="text/javascript">
         angular.module('myApp', [])
             .controller('FileViewer', function ($scope, $sce) {
-                $scope.documentRoot = "<?php echo realpath(SVN_PATH); ?>";
-                $scope.files = <?php echo $files ?>;
+                $scope.documentRoot = documentRoot;
+                $scope.files = files;
                 $scope.data = {
                     search: ''
                 };
@@ -139,7 +133,8 @@ $files = file_get_contents('data.json', true);
                         <span class="icon fa" ng-class="getIcon(file.extension)"></span>
                         <div ng-if="options.searchInContent && data.search.length > 0">({{ findOccurances(file) }})</div>
                         <div class="file-name">{{ file.filename }}</div>
-                        <div ng-show="options.showPath" class="path">{{ getPath(file) }}</span><span data-role="{{ getRole(getPath(file)) }}" class="role">{{ getRole(getPath(file)) }}</div>
+                        <div ng-show="options.showPath" class="path">{{ getPath(file) }}</span></div>
+                        <span data-role="{{ getRole(getPath(file)) }}" class="role">{{ getRole(getPath(file)) }}</span>
                         <div ng-if="options.searchInContent && data.search.length > 0" class="resultContent" ng-bind-html="displayContent(file)"></div>
                     </a>
                 </li>

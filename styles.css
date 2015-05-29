@@ -64,9 +64,8 @@ STYLE INPUT SEARCH-BOX
 
 .search-options label {
     display: block;
-    -webkit-flex: 1 0 auto;
-    flex: 1 0 auto;
-    text-align: center;
+    -webkit-flex: 1 0 33.333%;
+    flex: 1 0 33.333%;
 }
 
 .search-options [type="checkbox"] {
@@ -81,9 +80,21 @@ STYLE INPUT SEARCH-BOX
     transition: background-color 0.25s ease-in-out, color 0.25s ease-in-out;
 }
 
+.search-options .label::after {
+    content: "\2713";
+    float: right;
+    opacity: 0;
+    transition: color 0.25s ease-in-out, opacity 0.25s ease-in-out;
+}
+
 .search-options [type="checkbox"]:checked + .label {
     color: #fff;
     background-color: #4cadeb;
+}
+
+.search-options [type="checkbox"]:checked + .label::after {
+    opacity: 1;
+    color: #fff;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

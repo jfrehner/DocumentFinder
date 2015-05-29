@@ -50,11 +50,11 @@ foreach ($objects as $name => $object){
 
     $content = "";
 
-    if ($fileType == 'docx')) {
+    if ($fileType == 'docx') {
         $content = read_docx($name);
-    } elseif ($fileType == 'doc')) {
+    } elseif ($fileType == 'doc') {
         $content = read_doc($name);
-    } elseif ($fileType == 'xlsx')) {
+    } elseif ($fileType == 'xlsx') {
         $objPHPExcel = PHPExcel_IOFactory::load($name);
         foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
             $worksheetTitle     = $worksheet->getTitle();
@@ -79,7 +79,7 @@ foreach ($objects as $name => $object){
             $content .= '</table>';
             $content = strip_tags($content);
         }
-    } elseif ($fileType == 'pdf')) {
+    } elseif ($fileType == 'pdf') {
         // $pdf = $parser->parseFile($name);
         //$content = $pdf->getText();
     }
@@ -129,9 +129,8 @@ function read_docx($filename){
     return $striped_content;
 }
 
-$dataFile = fopen('data.json', 'w');
-fwrite($dataFile, json_encode($files));
+$dataFile = fopen('data.js', 'w');
+fwrite($dataFile, 'window.documentRoot = "' . realpath(SVN_PATH) .  '"; window.files = ' . json_encode($files) . ';');
 fclose($dataFile);
 
-header('Location: /');
 die();
