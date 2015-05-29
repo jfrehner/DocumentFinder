@@ -16,7 +16,8 @@ $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
 $excludes = [
     '7 Hauptordner SC/',
     '.svn/',
-    '~'
+    '~',
+    'Administrierenden-Handbuch'
 ];
 
 $allowedFileTypes = [
@@ -55,37 +56,21 @@ foreach ($objects as $name => $object){
     } elseif ($fileType == 'doc') {
         $content = read_doc($name);
     } elseif ($fileType == 'xlsx') {
-        $objPHPExcel = PHPExcel_IOFactory::load($name);
-        foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
-            $worksheetTitle     = $worksheet->getTitle();
-            $highestRow         = $worksheet->getHighestRow(); // e.g. 10
-            $highestColumn      = $worksheet->getHighestColumn(); // e.g 'F'
-            $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
-            $nrColumns = ord($highestColumn) - 64;
-            $content .= "<br>The worksheet ".$worksheetTitle." has ";
-            $content .= $nrColumns . ' columns (A-' . $highestColumn . ') ';
-            $content .= ' and ' . $highestRow . ' row.';
-            $content .= '<br>Data: <table border="1"><tr>';
-            for ($row = 1; $row <= $highestRow; ++ $row) {
-                $content .= '<tr>';
-                for ($col = 0; $col < $highestColumnIndex; ++ $col) {
-                    $cell = $worksheet->getCellByColumnAndRow($col, $row);
-                    $val = $cell->getValue();
-                    $dataType = PHPExcel_Cell_DataType::dataTypeForValue($val);
-                    $content .= '<td>' . $val . '</td>';
-                }
-                $content .= '</tr>';
-            }
-            $content .= '</table>';
-            $content = strip_tags($content);
-        }
+        $content = read_xlsx($name);
     } elseif ($fileType == 'pdf') {
-        // $pdf = $parser->parseFile($name);
-        //$content = $pdf->getText();
+        $pdf = $parser->parseFile($name);
+        $content = $pdf->getText();
     }
 
-    array_push($files, array("filename" => pathinfo($name, PATHINFO_FILENAME), "extension" => pathinfo($name, PATHINFO_EXTENSION), "path" => $name/* , "content" => $content */));
+    array_push($files, [
+        "filename" => pathinfo($name, PATHINFO_FILENAME),
+        "extension" => pathinfo($name, PATHINFO_EXTENSION),
+        "path" => $name,
+        "content" => ((bool) preg_match('//u', $content)) ? $content : ''
+    ]);
 }
+
+print_r($files);
 
 function read_doc($filename) {
     $fileHandle = fopen($filename, "r");
@@ -127,6 +112,35 @@ function read_docx($filename){
     $striped_content = strip_tags($content);
 
     return $striped_content;
+}
+
+function read_xlsx($filename) {
+    $objPHPExcel = PHPExcel_IOFactory::load($filename);
+    $content = '';
+
+    foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
+        $worksheetTitle     = $worksheet->getTitle();
+        $highestRow         = $worksheet->getHighestRow(); // e.g. 10
+        $highestColumn      = $worksheet->getHighestColumn(); // e.g 'F'
+        $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
+        $nrColumns = ord($highestColumn) - 64;
+        $content .= "<br>The worksheet ".$worksheetTitle." has ";
+        $content .= $nrColumns . ' columns (A-' . $highestColumn . ') ';
+        $content .= ' and ' . $highestRow . ' row.';
+        $content .= '<br>Data: <table border="1"><tr>';
+        for ($row = 1; $row <= $highestRow; ++ $row) {
+            $content .= '<tr>';
+            for ($col = 0; $col < $highestColumnIndex; ++ $col) {
+                $cell = $worksheet->getCellByColumnAndRow($col, $row);
+                $val = $cell->getValue();
+                $dataType = PHPExcel_Cell_DataType::dataTypeForValue($val);
+                $content .= '<td>' . $val . '</td>';
+            }
+            $content .= '</tr>';
+        }
+        $content .= '</table>';
+        return strip_tags($content);
+    }
 }
 
 $dataFile = fopen('data.js', 'w');

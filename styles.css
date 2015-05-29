@@ -178,7 +178,7 @@ LIST STYLES
 
 .files-list a {
     display: block;
-    height: 3.75em;
+    min-height: 3.75em;
 }
 
 .files-list [data-role] {
@@ -234,7 +234,8 @@ ICON STYLES
 }
 
 .resultContent {
-    color:#888888;
+    margin: 1.5em 0 1.5em 4.5em;
+    color: #888;
     font-size: small;
 }
 

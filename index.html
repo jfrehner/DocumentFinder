@@ -185,16 +185,13 @@
     </div>
     <div class="content-wrapper">
         <div class="input-wrapper">
-            <input class="search-input" type="text" ng-model="data.search" placeholder="Enter a document name">
+            <input class="search-input" type="text" ng-model="data.search" placeholder="Enter a document name" autofocus>
             <div class="search-options">
                 <label for="searchInContent">
                     <input type="checkbox" ng-model="options.searchInContent" id="searchInContent"/><span class="label">Search in content</span>
                 </label>
                 <label for="showPreview">
                     <input type="checkbox" ng-model="options.showPreview" id="showPreview"/><span class="label">Show Preview</span>
-                </label>
-                <label for="showPath">
-                    <input type="checkbox" ng-model="options.showPath" id="showPath"/><span class="label">Show Path</span>
                 </label>
             </div>
         </div>
@@ -203,8 +200,7 @@
                 <li ng-repeat="file in files | filter:fileFilter | filter: options.searchInContent ? data.search : {filename:data.search} track by $index">
                     <a href="file://{{file.path}}">
                         <span class="icon fa" ng-class="getIcon(file.extension)"></span>
-                        <div ng-if="options.searchInContent && data.search.length > 0">({{ findOccurances(file) }})</div>
-                        <div class="file-name">{{ file.filename }}</div>
+                        <div class="file-name"><span ng-if="options.searchInContent && data.search.length > 0">({{ findOccurances(file) }})</span> {{ file.filename }}</div>
                         <div ng-show="options.showPath" class="path">{{ getPath(file) }}</span></div>
                         <span data-role="{{ getRole(getPath(file)) }}" class="role">{{ getRole(getPath(file)) }}</span>
                         <div ng-if="options.searchInContent && data.search.length > 0" class="resultContent" ng-bind-html="displayContent(file)"></div>
