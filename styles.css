@@ -50,10 +50,12 @@ STYLE INPUT SEARCH-BOX
     font-size: 1.5em;
     border: 0;
     border-bottom: 1px solid #dadada;
+    cursor: pointer;
 }
 
 .search-input:focus {
     outline: none;
+    cursor: text;
 }
 
 .search-options {
@@ -151,6 +153,11 @@ LIST STYLES
 .roles-list li {
     position: relative;
     height: 14.2857vh;
+}
+
+.roles-list [data-role] {
+    cursor: pointer;
+    transition: opacity 0.25s ease-in-out;
 }
 
 .files-list li:first-child {
@@ -281,5 +288,5 @@ ICON STYLES
 }
 
 .disabled {
-    background-color: #000055;
+    opacity: 0.2;
 }
