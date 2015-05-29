@@ -195,7 +195,7 @@
                 <li ng-repeat="file in files | filter:fileFilter | filter: options.searchInContent ? data.search : {filename:data.search} track by $index">
                     <a href="file://{{file.path}}" ng-mouseenter="showPopup(file, $event)" ng-mouseleave="hidePopup($event)">
                         <span class="icon fa" ng-class="getIcon(file.extension)"></span>
-                        <div class="file-name">{{ file.filename }} <span ng-if="options.searchInContent && data.search.length > 0">({{ findOccurances(file) }} <ng-pluralize count="findOccurances(file)" when="{'one': 'match', 'other': 'matches'}"></ng-pluralize>)</span></div>
+                        <div class="file-name">{{ file.filename }} <span ng-if="options.searchInContent && data.search.length > 0">({{ findOccurances(file) }} <ng-pluralize count="findOccurances(file)" when="{'one': 'match', 'other': 'matches'}"></ng-pluralize> in content)</span></div>
                         <div class="path">{{ getPath(file) }}</span></div>
                         <span data-role="{{ getRole(getPath(file)) }}" class="role">{{ getRole(getPath(file)) }}</span>
                         <div class="result-content" ng-show="options.searchInContent && data.search.length > 0"></div>
