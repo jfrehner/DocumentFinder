@@ -317,15 +317,15 @@ ICON STYLES
 }
 
 [data-role="USE"] {
-    background-color: #EBD04C;
-}
-
-[data-role="ST"] {
     background-color: #4CEB9B;
 }
 
-[data-role="RE"] {
+[data-role="ST"] {
     background-color: #664CEB;
+}
+
+[data-role="RE"] {
+    background-color: #EBD04C;
 }
 
 [data-role="MP"] {

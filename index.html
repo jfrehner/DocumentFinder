@@ -133,15 +133,19 @@
 
                 $scope.searchFilter = function (file) {
                     var query = $scope.data.search
+                    var filename = file.filename
+                    var content = file.content
 
                     if (!$scope.options.caseSensitive) {
                         query = query.toLowerCase()
+                        filename = filename.toLowerCase()
+                        content = content.toLowerCase()
                     }
 
                     if ($scope.options.searchInContent) {
-                        return file.filename.indexOf(query) !== -1 || file.content.indexOf(query) !== -1
+                        return filename.indexOf(query) !== -1 || content.indexOf(query) !== -1
                     } else {
-                        return file.filename.indexOf(query) !== -1
+                        return filename.indexOf(query) !== -1
                     }
                 }
 
