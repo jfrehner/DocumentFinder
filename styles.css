@@ -244,6 +244,11 @@ ICON STYLES
     z-index: 100;
 }
 
+.result-content.reverse {
+    bottom: 105%;
+    top: auto;
+}
+
 .result-content::before {
     content: "";
     position: absolute;
@@ -264,6 +269,20 @@ ICON STYLES
     border-color: transparent transparent #dadada;
     border-style: solid;
     z-index: 1;
+}
+
+.result-content.reverse::before {
+    top: auto;
+    bottom: -1.5em;
+    border-width: 1.5em 1.5em 0;
+    border-color: #fff transparent transparent;
+}
+
+.result-content.reverse::after {
+    top: auto;
+    bottom: -1.625em;
+    border-width: 1.625em 1.625em 0;
+    border-color: #dadada transparent transparent;
 }
 
 .result-content:empty {

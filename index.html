@@ -177,6 +177,10 @@
                     target = target.parentNode
                 }
 
+                if ($event.pageY > document.body.offsetHeight / 2) {
+                    target.lastElementChild.classList.add('reverse')
+                }
+
                 target.lastElementChild.innerHTML = $scope.displayContent(file)
             }
 
@@ -187,6 +191,7 @@
                     target = target.parentNode
                 }
 
+                target.lastElementChild.classList.remove('reverse')
                 target.lastElementChild.innerHTML = ''
             }
         })
