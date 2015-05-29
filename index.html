@@ -14,8 +14,8 @@
                 };
 
                 $scope.options = {
+                    caseSensitive: false,
                     searchInContent: true,
-                    caseSensitive: true,
                     folders: {
                         im: true,
                         mp: true,
@@ -57,9 +57,15 @@
                         var content = file.content;
                         var output = "";
                         var occurances = $scope.findOccurances(file);
+                        var query = $scope.data.search
+
+                        if (!$scope.options.caseSensitive) {
+                            query = query.toLowerCase()
+                            content = content.toLowerCase()
+                        }
 
                         for (var x = 0; x < occurances; x++) {
-                            var pos = content.toLowerCase().indexOf($scope.data.search.toLowerCase());
+                            var pos = content.indexOf(query)
                             output += nl2br(highlight(content.slice(pos - area, pos + area), $scope.data.search)) + '<span class="omission">&#183;&#183;&#183;</span>';
                             content = content.slice(pos + 1);
                         }
@@ -69,8 +75,13 @@
                 }
 
                 $scope.findOccurances = function (file) {
-                    var string = file.content.toLowerCase()
-                    var subString = $scope.data.search.toLowerCase()
+                    var string = file.content
+                    var subString = $scope.data.search
+
+                    if (!$scope.options.caseSensitive) {
+                        string = string.toLowerCase()
+                        subString = subString.toLowerCase()
+                    }
 
                     if (subString.length <= 0) {
                         return string.length + 1;
@@ -118,6 +129,20 @@
                 $scope.fileFilter = function (file) {
                     var role = $scope.getRole($scope.getPath(file));
                     return $scope.options.folders[role.toLowerCase()]
+                }
+
+                $scope.searchFilter = function (file) {
+                    var query = $scope.data.search
+
+                    if (!$scope.options.caseSensitive) {
+                        query = query.toLowerCase()
+                    }
+
+                    if ($scope.options.searchInContent) {
+                        return file.filename.indexOf(query) !== -1 || file.content.indexOf(query) !== -1
+                    } else {
+                        return file.filename.indexOf(query) !== -1
+                    }
                 }
 
                 $scope.toggleRole = function (role) {
@@ -192,7 +217,7 @@
         </div>
         <div class="content">
             <ul class="files-list unstyled-list">
-                <li ng-repeat="file in files | filter:fileFilter | filter: options.searchInContent ? data.search : {filename:data.search} track by $index">
+                <li ng-repeat="file in files | filter: fileFilter | filter: searchFilter track by $index">
                     <a href="file://{{file.path}}" ng-mouseenter="showPopup(file, $event)" ng-mouseleave="hidePopup($event)">
                         <span class="icon fa" ng-class="getIcon(file.extension)"></span>
                         <div class="file-name">{{ file.filename }} <span ng-if="options.searchInContent && data.search.length > 0">({{ findOccurances(file) }} <ng-pluralize count="findOccurances(file)" when="{'one': 'match', 'other': 'matches'}"></ng-pluralize> in content)</span></div>
