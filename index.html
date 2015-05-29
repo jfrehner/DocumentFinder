@@ -203,7 +203,7 @@
                         <div class="file-name"><span ng-if="options.searchInContent && data.search.length > 0">({{ findOccurances(file) }})</span> {{ file.filename }}</div>
                         <div ng-show="options.showPath" class="path">{{ getPath(file) }}</span></div>
                         <span data-role="{{ getRole(getPath(file)) }}" class="role">{{ getRole(getPath(file)) }}</span>
-                        <div ng-if="options.searchInContent && data.search.length > 0" class="resultContent" ng-bind-html="displayContent(file)"></div>
+                        <div ng-if="options.searchInContent && data.search.length > 0 && options.showPreview" class="resultContent" ng-bind-html="displayContent(file)"></div>
                     </a>
                 </li>
             </ul>
