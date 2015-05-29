@@ -14,8 +14,8 @@
                 };
 
                 $scope.options = {
+                    searchInContent: true,
                     showPreview: true,
-                    showPath: true,
                     folders: {
                         im: true,
                         mp: true,
@@ -57,12 +57,14 @@
                         var content = file.content;
                         var output = "";
                         var occurances = $scope.findOccurances(file);
+
                         for (var x = 0; x < occurances; x++) {
                             var pos = content.toLowerCase().indexOf($scope.data.search.toLowerCase());
-                            output += nl2br(highlight(content.slice(pos-area,pos+area), $scope.data.search)) + "<br />---<br />";
+                            output += nl2br(highlight(content.slice(pos-area,pos+area), $scope.data.search)) + '<span class="omission">&#183;&#183;&#183;</span>';
                             content = content.slice(pos+1);
                         }
-                        return $sce.trustAsHtml(output);
+
+                        return $sce.trustAsHtml(output.replace(/<span class="omission">&#183;&#183;&#183;<\/span>$/, ''));
                     }
                 };
 
@@ -93,7 +95,7 @@
 
                 function highlight(data, search)
                 {
-                    return data.replace( new RegExp( "(" + preg_quote( search ) + ")" , 'gi' ), "<strong style='color:#FF0000'>$1</strong>" );
+                    return data.replace( new RegExp( "(" + preg_quote( search ) + ")" , 'gi' ), '<strong class="match">$1</strong>' );
                 }
 
                 $scope.getPath = function(file) {
@@ -188,10 +190,10 @@
             <input class="search-input" type="text" ng-model="data.search" placeholder="Enter a document name" autofocus>
             <div class="search-options">
                 <label for="searchInContent">
-                    <input type="checkbox" ng-model="options.searchInContent" id="searchInContent"/><span class="label">Search in content</span>
+                    <input type="checkbox" ng-model="options.searchInContent" id="searchInContent"><span class="label">Search in content</span>
                 </label>
                 <label for="showPreview">
-                    <input type="checkbox" ng-model="options.showPreview" id="showPreview"/><span class="label">Show Preview</span>
+                    <input type="checkbox" ng-model="options.showPreview" id="showPreview"><span class="label">Show Preview</span>
                 </label>
             </div>
         </div>
@@ -200,8 +202,8 @@
                 <li ng-repeat="file in files | filter:fileFilter | filter: options.searchInContent ? data.search : {filename:data.search} track by $index">
                     <a href="file://{{file.path}}">
                         <span class="icon fa" ng-class="getIcon(file.extension)"></span>
-                        <div class="file-name"><span ng-if="options.searchInContent && data.search.length > 0">({{ findOccurances(file) }})</span> {{ file.filename }}</div>
-                        <div ng-show="options.showPath" class="path">{{ getPath(file) }}</span></div>
+                        <div class="file-name">{{ file.filename }} <span ng-if="options.searchInContent && data.search.length > 0">({{ findOccurances(file) }})</span></div>
+                        <div class="path">{{ getPath(file) }}</span></div>
                         <span data-role="{{ getRole(getPath(file)) }}" class="role">{{ getRole(getPath(file)) }}</span>
                         <div ng-if="options.searchInContent && data.search.length > 0 && options.showPreview" class="resultContent" ng-bind-html="displayContent(file)"></div>
                     </a>
