@@ -141,6 +141,26 @@
 
                     $scope.options.folders[role.toLowerCase()] = true
                 }
+
+                $scope.showPopup = function (file, $event) {
+                    var target = $event.target
+
+                    while (target.tagName != 'A') {
+                        target = target.parentNode
+                    }
+
+                    target.lastElementChild.innerHTML = $scope.displayContent(file)
+                }
+
+                $scope.hidePopup = function ($event) {
+                    var target = $event.target
+
+                    while (target.tagName != 'A') {
+                        target = target.parentNode
+                    }
+
+                    target.lastElementChild.innerHTML = ''
+                }
             })
     </script>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
@@ -173,12 +193,12 @@
         <div class="content">
             <ul class="files-list unstyled-list">
                 <li ng-repeat="file in files | filter:fileFilter | filter: options.searchInContent ? data.search : {filename:data.search} track by $index">
-                    <a href="file://{{file.path}}">
+                    <a href="file://{{file.path}}" ng-mouseenter="showPopup(file, $event)" ng-mouseleave="hidePopup($event)">
                         <span class="icon fa" ng-class="getIcon(file.extension)"></span>
-                        <div class="file-name">{{ file.filename }} <span ng-if="options.searchInContent && data.search.length > 0">({{ findOccurances(file) }})</span></div>
+                        <div class="file-name">{{ file.filename }} <span ng-if="options.searchInContent && data.search.length > 0">({{ findOccurances(file) }} <ng-pluralize count="findOccurances(file)" when="{'one': 'match', 'other': 'matches'}"></ng-pluralize>)</span></div>
                         <div class="path">{{ getPath(file) }}</span></div>
                         <span data-role="{{ getRole(getPath(file)) }}" class="role">{{ getRole(getPath(file)) }}</span>
-                        <div ng-if="options.searchInContent && data.search.length > 0" class="resultContent" ng-bind-html="displayContent(file)"></div>
+                        <div class="result-content" ng-show="options.searchInContent && data.search.length > 0"></div>
                     </a>
                 </li>
             </ul>
