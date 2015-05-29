@@ -1,10 +1,10 @@
 <html ng-app="myApp" ng-controller="FileViewer">
 <head>
-    <title></title>
+    <title>Monomo Document Finder</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <script src="data.js"></script>
-    <script type="text/javascript">
+    <script>
         angular.module('myApp', [])
             .controller('FileViewer', function ($scope, $sce) {
                 $scope.documentRoot = documentRoot;
@@ -14,7 +14,7 @@
                 };
 
                 $scope.options = {
-                    searchInContent: true,
+                    searchInContent: false,
                     showPreview: true,
                     folders: {
                         im: true,
@@ -51,7 +51,7 @@
                     return file
                 }
 
-                $scope.displayContent = function(file) {
+                $scope.displayContent = function (file) {
                     if ($scope.data.search.length > 0 && $scope.options.showPreview) {
                         var area = 20;
                         var content = file.content;
@@ -60,27 +60,37 @@
 
                         for (var x = 0; x < occurances; x++) {
                             var pos = content.toLowerCase().indexOf($scope.data.search.toLowerCase());
-                            output += nl2br(highlight(content.slice(pos-area,pos+area), $scope.data.search)) + '<span class="omission">&#183;&#183;&#183;</span>';
-                            content = content.slice(pos+1);
+                            output += nl2br(highlight(content.slice(pos - area, pos + area), $scope.data.search)) + '<span class="omission">&#183;&#183;&#183;</span>';
+                            content = content.slice(pos + 1);
                         }
 
                         return $sce.trustAsHtml(output.replace(/<span class="omission">&#183;&#183;&#183;<\/span>$/, ''));
                     }
                 };
 
-                $scope.findOccurances = function(file) {
+                $scope.findOccurances = function (file) {
                     var string = file.content.toLowerCase();
                     var subString = $scope.data.search.toLowerCase();
 
-                    if(subString.length<=0) return string.length+1;
-
-                    var n=0, pos=0;
-                    var step=subString.length;
-
-                    while(true){
-                        pos=string.indexOf(subString,pos);
-                        if(pos>=0){ n++; pos+=step; } else break;
+                    if (subString.length <= 0) {
+                        return string.length + 1;
                     }
+
+                    var n = 0;
+                    var pos = 0;
+                    var step = subString.length;
+
+                    while (true) {
+                        pos = string.indexOf(subString, pos);
+
+                        if (pos >= 0) {
+                            n++;
+                            pos += step;
+                        } else {
+                            break;
+                        }
+                    }
+
                     return(n);
                 };
 
@@ -88,14 +98,14 @@
                     return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br />$2');
                 }
 
-                function preg_quote(str, delimiter) {
+                function preg_quote (str, delimiter) {
                     return String(str)
                         .replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\' + (delimiter || '') + '-]', 'g'), '\\$&');
                 }
 
                 function highlight(data, search)
                 {
-                    return data.replace( new RegExp( "(" + preg_quote( search ) + ")" , 'gi' ), '<strong class="match">$1</strong>' );
+                    return data.replace(new RegExp( "(" + preg_quote(search) + ")" , 'gi'), '<strong class="match">$1</strong>');
                 }
 
                 $scope.getPath = function(file) {
@@ -106,72 +116,36 @@
                     return path.split("/")[1].split(" ").pop()
                 }
 
-                $scope.fileFilter = function(file) {
+                $scope.fileFilter = function (file) {
                     var role = $scope.getRole($scope.getPath(file));
-                    return ($scope.options.folders.im && role == 'IM')
-                        || ($scope.options.folders.mp && role == 'MP')
-                        || ($scope.options.folders.qs && role == 'QS')
-                        || ($scope.options.folders.re && role == 'RE')
-                        || ($scope.options.folders.use && role == 'USE')
-                        || ($scope.options.folders.st && role == 'ST')
-                        || ($scope.options.folders.sa && role == 'SA');
+                    return $scope.options.folders[role.toLowerCase()]
                 }
 
-                $scope.toggleRole = function(role) {
+                $scope.toggleRole = function (role) {
+                    var disable = false
 
-                    var active;
-                    if (role == 'IM') {
-                        active = $scope.options.folders.im;
-                    } else if (role == 'MP') {
-                        active = $scope.options.folders.mp;
-                    } else if (role == 'QS') {
-                        active = $scope.options.folders.qs;
-                    } else if (role == 'RE') {
-                        active = $scope.options.folders.re;
-                    } else if (role == 'USE') {
-                        active = $scope.options.folders.use;
-                    } else if (role == 'ST') {
-                        active = $scope.options.folders.st;
-                    } else if (role == 'SA') {
-                        active = $scope.options.folders.sa;
-                    }
-
-                    if ($scope.options.folders.im
-                        && $scope.options.folders.mp
-                        && $scope.options.folders.qs
-                        && $scope.options.folders.re
-                        && $scope.options.folders.use
-                        && $scope.options.folders.st
-                        && $scope.options.folders.sa
-                        || !active) {
-                        $scope.options.folders = {
-                            im: (role == 'IM'),
-                            mp: (role == 'MP'),
-                            qs: (role == 'QS'),
-                            re: (role == 'RE'),
-                            use: (role == 'USE'),
-                            st: (role == 'ST'),
-                            sa: (role == 'SA')
+                    for (var prop in $scope.options.folders) {
+                        if (!$scope.options.folders[prop]) {
+                            disable = true
                         }
-
-                    } else {
-                        $scope.options.folders = {
-                            im: true,
-                            mp: true,
-                            qs: true,
-                            re: true,
-                            use: true,
-                            st: true,
-                            sa: true
-                        };
-
                     }
 
+                    if (disable && $scope.options.folders[role.toLowerCase()]) {
+                        for (var prop in $scope.options.folders) {
+                            $scope.options.folders[prop] = true
+                        }
+                    } else {
+                        for (var prop in $scope.options.folders) {
+                            $scope.options.folders[prop] = false
+                        }
+                    }
+
+                    $scope.options.folders[role.toLowerCase()] = true
                 }
-            });
+            })
     </script>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="sidebar">
