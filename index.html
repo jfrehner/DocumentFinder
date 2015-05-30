@@ -10,7 +10,8 @@
             $scope.files = files;
             $scope.data = {
                 search: ''
-            };
+            }
+            $scope.showDetails = false
 
             $scope.options = {
                 caseSensitive: false,
@@ -170,29 +171,14 @@
                 $scope.options.folders[role.toLowerCase()] = true
             }
 
-            $scope.showPopup = function (file, $event) {
-                var target = $event.target
+            var timeout = null
 
-                while (target.tagName != 'A') {
-                    target = target.parentNode
+            $scope.displayMatches = function () {
+                if ($scope.data.search) {
+                    setTimeout(function () {
+                        $scope.showDetails = true
+                    }, 1)
                 }
-
-                if ($event.pageY > document.body.offsetHeight / 2) {
-                    target.lastElementChild.classList.add('reverse')
-                }
-
-                target.lastElementChild.innerHTML = $scope.displayContent(file)
-            }
-
-            $scope.hidePopup = function ($event) {
-                var target = $event.target
-
-                while (target.tagName != 'A') {
-                    target = target.parentNode
-                }
-
-                target.lastElementChild.classList.remove('reverse')
-                target.lastElementChild.innerHTML = ''
             }
         })
     </script>
@@ -213,7 +199,7 @@
     </div>
     <div class="content-wrapper">
         <div class="input-wrapper">
-            <input class="search-input" type="text" ng-model="data.search" placeholder="Enter a document name" autofocus>
+            <input class="search-input" type="text" ng-model="data.search" placeholder="Enter a document name" autofocus ng-change="displayMatches()">
             <div class="search-options">
                 <label for="caseSensitive">
                     <input type="checkbox" ng-model="options.caseSensitive" id="caseSensitive"><span class="label">Case sensitive</span>
@@ -226,12 +212,14 @@
         <div class="content">
             <ul class="files-list unstyled-list">
                 <li ng-repeat="file in files | filter: fileFilter | filter: searchFilter track by $index">
-                    <a href="file://{{file.path}}" ng-mouseenter="showPopup(file, $event)" ng-mouseleave="hidePopup($event)">
+                    <a href="file://{{file.path}}">
                         <span class="icon fa" ng-class="getIcon(file.extension)"></span>
-                        <div class="file-name">{{ file.filename }} <span ng-if="options.searchInContent && data.search.length > 0">({{ findOccurances(file) }} <ng-pluralize count="findOccurances(file)" when="{'one': 'match', 'other': 'matches'}"></ng-pluralize> in content)</span></div>
+                        <div class="file-name">{{ file.filename }} <span ng-show="options.searchInContent && data.search.length > 0 && findOccurances(file) > 0">({{ findOccurances(file) }} <ng-pluralize count="findOccurances(file)" when="{'one': 'match', 'other': 'matches'}"></ng-pluralize> in content)</span></div>
                         <div class="path">{{ getPath(file) }}</span></div>
                         <span data-role="{{ getRole(getPath(file)) }}" class="role">{{ getRole(getPath(file)) }}</span>
-                        <div class="result-content" ng-show="options.searchInContent && data.search.length > 0"></div>
+                        <div class="result-content" ng-show="options.searchInContent && data.search.length > 0 && findOccurances(file) > 0">
+                            <div class="matches" ng-show="showDetails" ng-bind-html="displayContent(file)"></div>
+                        </div>
                     </a>
                 </li>
             </ul>
