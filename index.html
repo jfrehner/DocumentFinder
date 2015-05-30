@@ -234,6 +234,11 @@
 
                 if (e.shiftKey) {
                     search.value = ''
+
+                    var event = document.createEvent('HTMLEvents')
+                    event.initEvent('input', true, true)
+                    event.eventName = 'input'
+                    search.dispatchEvent(event)
                 }
 
                 search.focus()

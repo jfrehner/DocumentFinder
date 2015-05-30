@@ -40,6 +40,7 @@ STYLE INPUT SEARCH-BOX
     top: 0;
     right: 0;
     z-index: 100;
+    box-shadow: 0 1px 3px rgba(30, 30, 30, 0.15);
 }
 
 .search-input {
@@ -71,6 +72,10 @@ STYLE INPUT SEARCH-BOX
     flex: 1 0 33.333%;
 }
 
+.search-options label:first-child {
+    border-right: 1px solid #dadada;
+}
+
 .search-options [type="checkbox"] {
     display: none;
 }
@@ -80,24 +85,16 @@ STYLE INPUT SEARCH-BOX
     padding: 0.25em 1em;
     background-color: #ededed;
     cursor: pointer;
-    transition: background-color 0.25s ease-in-out, color 0.25s ease-in-out;
-}
-
-.search-options .label::after {
-    content: "\2713";
-    float: right;
-    opacity: 0;
-    transition: color 0.25s ease-in-out, opacity 0.25s ease-in-out;
 }
 
 .search-options [type="checkbox"]:checked + .label {
-    color: #fff;
-    background-color: #4cadeb;
+    color: #4cadeb;
 }
 
-.search-options [type="checkbox"]:checked + .label::after {
-    opacity: 1;
-    color: #fff;
+.search-options [type="checkbox"]:checked + .label::before {
+    content: "\2713";
+    margin-right: 0.5em;
+    color: #4cadeb;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -119,8 +116,6 @@ body::after {
     width: 10%;
     float: left;
     background-color: #ededed;
-    border-right: 1px solid #dadada;
-    z-index: 1000;
 }
 
 .path {
@@ -130,11 +125,16 @@ body::after {
 
 .content-wrapper {
     width: 90%;
-    height: calc(100% - 5.75em);
+    height: 100%;
     float: right;
     position: relative;
+    padding-top: 5.75em;
+    box-shadow: 0 1px 3px rgba(30, 30, 30, 0.55);
+}
+
+.content {
+    height: 100%;
     overflow: scroll;
-    margin-top: 5.75em;
 }
 
 
@@ -154,6 +154,17 @@ LIST STYLES
 .roles-list [data-role] {
     cursor: pointer;
     transition: opacity 0.25s ease-in-out;
+    border-radius: 0;
+    margin: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    height: auto;
+    display: table-cell;
+    line-height: 14.2857vh;
+    -webkit-transform: translateZ(0);
 }
 
 .files-list li:first-child {
