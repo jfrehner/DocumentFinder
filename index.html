@@ -209,7 +209,7 @@
                 </label>
             </div>
         </div>
-        <div class="content">
+        <div class="content" ng-cloak>
             <ul class="files-list unstyled-list">
                 <li ng-repeat="file in files | filter: fileFilter | filter: searchFilter track by $index">
                     <a href="file://{{file.path}}">
