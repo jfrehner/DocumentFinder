@@ -16,8 +16,7 @@ $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
 $excludes = [
     '7 Hauptordner SC/',
     '.svn/',
-    '~',
-    'Administrierenden-Handbuch'
+    '~'
 ];
 
 $allowedFileTypes = [
@@ -57,7 +56,7 @@ foreach ($objects as $name => $object){
         $content = read_doc($name);
     } elseif ($fileType == 'xlsx') {
         $content = read_xlsx($name);
-    } elseif ($fileType == 'pdf') {
+    } elseif ($fileType == 'pdf' && strpos($name, 'Administrierenden-Handbuch') == false) {
         $pdf = $parser->parseFile($name);
         $content = $pdf->getText();
     }
@@ -69,8 +68,6 @@ foreach ($objects as $name => $object){
         "content" => ((bool) preg_match('//u', $content)) ? $content : ''
     ]);
 }
-
-print_r($files);
 
 function read_doc($filename) {
     $fileHandle = fopen($filename, "r");
