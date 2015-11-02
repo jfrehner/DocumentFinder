@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('Europe/Berlin');
+
 require_once 'config/config.php';
 
 // https://blog.mayflower.de/561-Import-and-export-data-using-PHPExcel.html
@@ -14,9 +16,20 @@ $path = realpath(SVN_PATH);
 $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
 
 $excludes = [
-    '7 Hauptordner SC/',
-    '.svn/',
+    '7 SC/',
+    '.git/',
     '~'
+];
+
+$excludeContents = [
+    '0.5.4 General_Information',
+    '3.1.1_Clientdocuments',
+    'P2P_Mitgliederdatenbank_Template',
+    'OldSystemScreenshots',
+    'Scope_Diagram',
+    'Elicitation_Methods',
+    'Stakeholder&Systemcontext',
+    'Anforderungsliste_V'
 ];
 
 $allowedFileTypes = [
@@ -32,6 +45,7 @@ $allowedFileTypes = [
 
 foreach ($objects as $name => $object){
     $excludeItem = false;
+    $excludeContent = false;
 
     foreach ($excludes as $exclude) {
         if (strpos($name, $exclude) != false) {
@@ -50,15 +64,23 @@ foreach ($objects as $name => $object){
 
     $content = "";
 
-    if ($fileType == 'docx') {
-        $content = read_docx($name);
-    } elseif ($fileType == 'doc') {
-        $content = read_doc($name);
-    } elseif ($fileType == 'xlsx') {
-        $content = read_xlsx($name);
-    } elseif ($fileType == 'pdf' && strpos($name, 'Administrierenden-Handbuch') == false) {
-        $pdf = $parser->parseFile($name);
-        $content = $pdf->getText();
+    foreach ($excludeContents as $exclude) {
+        if (strpos($name, $exclude) != false) {
+            $excludeContent = true;
+        }
+    }
+
+    if (!$excludeContent) {
+        if ($fileType == 'docx') {
+            $content = read_docx($name);
+        } elseif ($fileType == 'doc') {
+            $content = read_doc($name);
+        } elseif ($fileType == 'xlsx') {
+            $content = read_xlsx($name);
+        } elseif ($fileType == 'pdf') {
+            $pdf = $parser->parseFile($name);
+            $content = $pdf->getText();
+        }
     }
 
     array_push($files, [
@@ -143,5 +165,7 @@ function read_xlsx($filename) {
 $dataFile = fopen('data.js', 'w');
 fwrite($dataFile, 'window.documentRoot = "' . realpath(SVN_PATH) .  '"; window.files = ' . json_encode($files) . ';');
 fclose($dataFile);
+
+echo 'Success: data.js has been created and the Document Finder is ready!';
 
 die();
