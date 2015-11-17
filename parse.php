@@ -15,11 +15,7 @@ $files = [];
 $path = realpath(SVN_PATH);
 $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
 
-$excludes = [
-    '7 SC/',
-    '.git/',
-    '~'
-];
+$excludes = explode(";", EXCLUDES);
 
 $allowedFileTypes = [
     'docx',
