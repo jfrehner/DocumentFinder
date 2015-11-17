@@ -21,17 +21,6 @@ $excludes = [
     '~'
 ];
 
-$excludeContents = [
-    '0.5.4 General_Information',
-    '3.1.1_Clientdocuments',
-    'P2P_Mitgliederdatenbank_Template',
-    'OldSystemScreenshots',
-    'Scope_Diagram',
-    'Elicitation_Methods',
-    'Stakeholder&Systemcontext',
-    'Anforderungsliste_V'
-];
-
 $allowedFileTypes = [
     'docx',
     'doc',
@@ -45,7 +34,6 @@ $allowedFileTypes = [
 
 foreach ($objects as $name => $object){
     $excludeItem = false;
-    $excludeContent = false;
 
     foreach ($excludes as $exclude) {
         if (strpos($name, $exclude) != false) {
@@ -64,13 +52,7 @@ foreach ($objects as $name => $object){
 
     $content = "";
 
-    foreach ($excludeContents as $exclude) {
-        if (strpos($name, $exclude) != false) {
-            $excludeContent = true;
-        }
-    }
-
-    if (!$excludeContent) {
+    try {
         if ($fileType == 'docx') {
             $content = read_docx($name);
         } elseif ($fileType == 'doc') {
@@ -81,6 +63,8 @@ foreach ($objects as $name => $object){
             $pdf = $parser->parseFile($name);
             $content = $pdf->getText();
         }
+    } catch (Exception $e) {
+        echo "\n\033[0;31mWARNING\033[0m: Failed to parse contents of file \033[1m'" . $name . "'\033[0m.\n";
     }
 
     array_push($files, [
@@ -166,6 +150,6 @@ $dataFile = fopen('data.js', 'w');
 fwrite($dataFile, 'window.documentRoot = "' . realpath(SVN_PATH) .  '"; window.files = ' . json_encode($files) . ';');
 fclose($dataFile);
 
-echo 'Success: data.js has been created and the Document Finder is ready!';
+echo "\n\033[0;32mSUCCESS\033[0m: data.js has been created and the Document Finder is ready!\n";
 
 die();
