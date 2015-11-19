@@ -1,33 +1,35 @@
-var app = require('app')
-var BrowserWindow = require('browser-window')
-var Shell = require('shell')
-var Menu = require('menu')
+const electron = require('electron')
+
+const app = electron.app
+const BrowserWindow = electron.BrowserWindow
+const Shell = electron.shell
+const Menu = electron.Menu
 
 var mainWindow = null
 
-app.on('window-all-closed', function() {
-  app.quit()
-})
+app.on('window-all-closed', () => app.quit())
 
-app.on('ready', function () {
-  mainWindow = new BrowserWindow({ width: 800, height: 600 })
-  mainWindow.loadUrl('file://' + __dirname + '/index.html')
-
-  mainWindow.on('closed', function() {
-    mainWindow = null
+app.on('ready', () => {
+  mainWindow = new BrowserWindow({
+      width: 800,
+      height: 600,
+      center: true
   })
+  mainWindow.loadURL('file://' + __dirname + '/index.html')
 
-  mainWindow.webContents.on('will-navigate', function (event, url) {
+  mainWindow.on('closed', () => mainWindow = null)
+
+  mainWindow.webContents.on('will-navigate', (event, url) => {
     event.preventDefault()
     Shell.openItem(decodeURI(url.replace('file://', '')))
   })
 
-  var template = [
+  const template = [
     {
-      label: 'Electron',
+      label: 'Monomo',
       submenu: [
         {
-          label: 'About Electron',
+          label: 'About Monomo',
           selector: 'orderFrontStandardAboutPanel:'
         },
         {
@@ -41,7 +43,7 @@ app.on('ready', function () {
           type: 'separator'
         },
         {
-          label: 'Hide Electron',
+          label: 'Hide Monomo',
           accelerator: 'Command+H',
           selector: 'hide:'
         },
@@ -127,6 +129,5 @@ app.on('ready', function () {
   ]
 
   menu = Menu.buildFromTemplate(template)
-
   Menu.setApplicationMenu(menu)
 })
