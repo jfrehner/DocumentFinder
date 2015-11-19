@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('Europe/Berlin');
+
 require_once 'config/config.php';
 
 // https://blog.mayflower.de/561-Import-and-export-data-using-PHPExcel.html
@@ -13,11 +15,7 @@ $files = [];
 $path = realpath(SVN_PATH);
 $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
 
-$excludes = [
-    '7 Hauptordner SC/',
-    '.svn/',
-    '~'
-];
+$excludes = explode(";", EXCLUDES);
 
 $allowedFileTypes = [
     'docx',
@@ -50,15 +48,19 @@ foreach ($objects as $name => $object){
 
     $content = "";
 
-    if ($fileType == 'docx') {
-        $content = read_docx($name);
-    } elseif ($fileType == 'doc') {
-        $content = read_doc($name);
-    } elseif ($fileType == 'xlsx') {
-        $content = read_xlsx($name);
-    } elseif ($fileType == 'pdf' && strpos($name, 'Administrierenden-Handbuch') == false) {
-        $pdf = $parser->parseFile($name);
-        $content = $pdf->getText();
+    try {
+        if ($fileType == 'docx') {
+            $content = read_docx($name);
+        } elseif ($fileType == 'doc') {
+            $content = read_doc($name);
+        } elseif ($fileType == 'xlsx') {
+            $content = read_xlsx($name);
+        } elseif ($fileType == 'pdf') {
+            $pdf = $parser->parseFile($name);
+            $content = $pdf->getText();
+        }
+    } catch (Exception $e) {
+        echo "\n\033[0;31mWARNING\033[0m: Failed to parse contents of file \033[1m'" . $name . "'\033[0m.\n";
     }
 
     array_push($files, [
@@ -143,5 +145,7 @@ function read_xlsx($filename) {
 $dataFile = fopen('data.js', 'w');
 fwrite($dataFile, 'window.documentRoot = "' . realpath(SVN_PATH) .  '"; window.files = ' . json_encode($files) . ';');
 fclose($dataFile);
+
+echo "\n\033[0;32mSUCCESS\033[0m: data.js has been created and the Document Finder is ready!\n";
 
 die();

@@ -156,6 +156,7 @@ LIST STYLES
     transition: opacity 0.25s ease-in-out;
     border-radius: 0;
     margin: 0;
+    padding: 0;
     top: 0;
     left: 0;
     right: 0;
@@ -292,7 +293,7 @@ ICON STYLES
     background-color: #DE4F48;
 }
 
-[data-role="QS"] {
+[data-role="QM"] {
     background-color: #79EB4C;
 }
 
@@ -308,7 +309,7 @@ ICON STYLES
     background-color: #EBD04C;
 }
 
-[data-role="MP"] {
+[data-role="PM"] {
     background-color: #EB4CEB;
 }
 
