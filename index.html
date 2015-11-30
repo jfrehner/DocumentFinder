@@ -3,15 +3,29 @@
     <title>Monomo Document Finder</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-    <script src="data.js"></script>
     <script>
-        angular.module('myApp', []).controller('FileViewer', function ($scope, $sce) {
+        angular.module('myApp', []).controller('FileViewer', function ($scope, $sce, $http) {
             var ipc = require('electron').ipcRenderer;
 
-            //ipc.send('selectFolder');
 
-            $scope.documentRoot = documentRoot;
-            $scope.files = files;
+            $scope.selectFolder = function() {
+                ipc.send('selectFolder');
+            }
+
+            ipc.on('wroteFile', function() {
+                $scope.loadData();
+            })
+
+            $scope.loadData = function() {
+                $http.get('data.json')
+                        .then(function(res){
+                            $scope.documentRoot = res.data.documentRoot;
+                            $scope.files = res.data.data;
+                        });
+            }
+
+            $scope.loadData();
+
             $scope.data = {
                 search: ''
             }
@@ -123,13 +137,10 @@
             }
 
             $scope.getPath = function (file) {
-                console.log(file);
-                console.log($scope.documentRoot);
                 return file.path.slice($scope.documentRoot.length, -(file.filename.length + file.extension.length + 1));
             }
 
             $scope.getRole = function (path) {
-                console.log(path.split("/"));
                 return path.split("/")[1].split(" ").pop()
             }
 
@@ -216,7 +227,8 @@
                 </label>
             </div>
         </div>
-        <div class="content" ng-cloak>
+        <button ng-cloak ng-show="!documentRoot"ng-click="selectFolder()">Select folder</button>
+        <div class="content" ng-cloak ng-if="files.length > 0">
             <ul class="files-list unstyled-list">
                 <li ng-repeat="file in files | filter: fileFilter | filter: searchFilter track by $index">
                     <a href="file://{{file.path}}">

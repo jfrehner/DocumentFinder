@@ -22,8 +22,7 @@ ipc.on('selectFolder', function(event, args) {
   });
 
   function ignoreFunc(file, stats) {
-    // `file` is the absolute path to the file, and `stats` is an `fs.Stats`
-    // object returned from `fs.lstat()`.
+
     let allowed = [
       'docx',
       'doc',
@@ -38,32 +37,30 @@ ipc.on('selectFolder', function(event, args) {
 
     if (file) {
       isValidFile = allowed.filter((a) => {
-        return file.indexOf(a) !== -1
-      }).length > 0;
+            return file.indexOf(a) !== -1
+          }).length > 0;
     }
-    //return !stats.isDirectory() || !(file && path.basename(file).lastIndexOf('.') !== -1 && allowed.map((str) =>{return str === path.basename(file).substr(path.basename(file).lastIndexOf('.'))}));
+
     return !(stats.isDirectory() && file.indexOf('.svn') === -1 || isValidFile);
   }
 
-// Ignore files named 'foo.cs' and descendants of directories named test
-  recursive(folder[0], [ignoreFunc], function (err, files) {
-    // Files is an array of filename
-
-    let myFiles = [];
-    files.forEach((f) => myFiles.push({
-      "filename": f.substr(f.lastIndexOf('/') + 1),
-      "extension": f.substr(f.lastIndexOf('.') + 1),
-      "path": f,
-      "content": ""
-    }));
-
-    fs.writeFile('data.js', JSON.stringify(myFiles), () => {
-      console.log('wrote file!')
-    })
-  })
-
   if (folder) {
-    console.log(folder)
+
+    recursive(folder[0], [ignoreFunc], function (err, files) {
+
+      let myFiles = {documentRoot: folder[0], data: []};
+      files.forEach((f) => myFiles.data.push({
+        "filename": f.substr(f.lastIndexOf('/') + 1),
+        "extension": f.substr(f.lastIndexOf('.') + 1),
+        "path": f,
+        "content": ""
+      }));
+
+      fs.writeFile('data.json', JSON.stringify(myFiles), () => {
+        console.log('wrote file!')
+        mainWindow.webContents.send('wroteFile');
+      })
+    })
   }
 })
 
@@ -77,7 +74,7 @@ app.on('ready', () => {
   })
   mainWindow.loadURL('file://' + __dirname + '/index.html')
 
-  mainWindow.openDevTools();
+  //mainWindow.openDevTools();
 
   mainWindow.on('closed', () => mainWindow = null)
 
