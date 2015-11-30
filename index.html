@@ -6,6 +6,10 @@
     <script src="data.js"></script>
     <script>
         angular.module('myApp', []).controller('FileViewer', function ($scope, $sce) {
+            var ipc = require('electron').ipcRenderer;
+
+            //ipc.send('selectFolder');
+
             $scope.documentRoot = documentRoot;
             $scope.files = files;
             $scope.data = {
@@ -119,10 +123,13 @@
             }
 
             $scope.getPath = function (file) {
+                console.log(file);
+                console.log($scope.documentRoot);
                 return file.path.slice($scope.documentRoot.length, -(file.filename.length + file.extension.length + 1));
             }
 
             $scope.getRole = function (path) {
+                console.log(path.split("/"));
                 return path.split("/")[1].split(" ").pop()
             }
 

@@ -1,3 +1,0 @@
-<?php
-
-define("SVN_PATH", "/path/to/svn_dir");
