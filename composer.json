@@ -1,7 +1,0 @@
-{
-    "name": "fhnw/documentfinder",
-    "require": {
-        "smalot/pdfparser": "0.9.*",
-        "phpoffice/phpexcel": "1.8.*"
-    }
-}
