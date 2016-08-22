@@ -66,32 +66,24 @@ STYLE INPUT SEARCH-BOX
     border-bottom: 1px solid #dadada;
 }
 
-.search-options label {
+.search-options .label {
     display: block;
     -webkit-flex: 1 0 33.333%;
     flex: 1 0 33.333%;
-}
-
-.search-options label:first-child {
-    border-right: 1px solid #dadada;
-}
-
-.search-options [type="checkbox"] {
-    display: none;
-}
-
-.search-options .label {
-    display: block;
     padding: 0.25em 1em;
     background-color: #ededed;
     cursor: pointer;
 }
 
-.search-options [type="checkbox"]:checked + .label {
+.search-options .label:first-child {
+    border-right: 1px solid #dadada;
+}
+
+.search-options .active {
     color: #4cadeb;
 }
 
-.search-options [type="checkbox"]:checked + .label::before {
+.search-options .active::before {
     content: "\2713";
     margin-right: 0.5em;
     color: #4cadeb;
@@ -215,30 +207,57 @@ ICON STYLES
     float: left;
     text-align: center;
     line-height: 3em;
-}
-
-.fa {
     font-size: 20px;
 }
 
-.wordColor {
-    color:#3e5ba9;
+@font-face {
+  font-family: 'icomoon';
+  src: url('fonts/icomoon.eot?z645aq');
+  src: url('fonts/icomoon.eot?z645aq#iefix') format('embedded-opentype'),
+       url('fonts/icomoon.ttf?z645aq') format('truetype'),
+       url('fonts/icomoon.woff?z645aq') format('woff'),
+       url('fonts/icomoon.svg?z645aq#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
 }
 
-.excelColor {
-    color:#0da056;
+[class^="icon-"], [class*=" icon-"] {
+    font-family: 'icomoon' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-.powerpointColor {
-    color:#f89a1d;
+.icon-txt:before {
+    content: "\f0f6";
+    color:#000000;
 }
 
-.pdfColor {
+.icon-pdf:before {
+    content: "\f1c1";
     color:#df4430;
 }
 
-.txtColor {
-    color:#000000;
+.icon-doc:before,
+.icon-docx:before {
+    content: "\f1c2";
+    color:#3e5ba9;
+}
+
+.icon-xls:before,
+.icon-xlsx:before {
+    content: "\f1c3";
+    color:#0da056;
+}
+
+.icon-ppt:before,
+.icon-pptx:before {
+    content: "\f1c4";
+    color:#f89a1d;
 }
 
 .result-content {
