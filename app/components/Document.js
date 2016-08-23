@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 
 const getPath = (path, root) => (
   path.replace(root, '')
@@ -14,19 +14,26 @@ const Document = ({ file, root }) => {
 
   return (
     <li>
-      <a href="file://{{file.path}}">
+      <a href={`file://${file.path}`}>
         <span className={`icon icon-${file.extension}`}></span>
-        <div className="file-name">{file.filename}</div>
-        <div className="path">{path}</div>
-        <span data-role={role} className="role">{role}</span>
+        <div className="file-name">
+          {file.filename}
+        </div>
+        <div className="path">
+          {path}
+        </div>
+        <span data-role={role}
+              className="role">
+          {role}
+        </span>
       </a>
     </li>
   )
 }
 
 Document.propTypes = {
-  file: React.PropTypes.object,
-  root: React.PropTypes.string
+  file: PropTypes.object,
+  root: PropTypes.string
 }
 
 export default Document

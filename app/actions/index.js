@@ -1,7 +1,7 @@
 import { normalize } from 'normalizr'
 import { ipcRenderer } from 'electron'
 import { readFile } from 'fs'
-import * as schema from './schema'
+import { arrayOfDocuments } from './schema'
 
 export const toggleRole = (role) => ({
   type: 'TOGGLE_ROLE',
@@ -80,7 +80,7 @@ export const fetchDocuments = (role) => (dispatch) => {
       dispatch({
         type: 'FETCH_DOCUMENTS_SUCCESS',
         role,
-        response: normalize(filterByRole(JSON.parse(data).documents, role), schema.arrayOfDocuments)
+        response: normalize(filterByRole(JSON.parse(data).documents, role), arrayOfDocuments)
       })
     }
   })

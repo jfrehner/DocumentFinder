@@ -1,17 +1,21 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { toggleRole } from '../actions'
 
 let Role = ({ role, disabled, onToggleRole }) => (
   <li>
-    <span onClick={() => onToggleRole(role)} className={disabled ? 'disabled' : ''} data-role={role}>{role}</span>
+    <span onClick={() => onToggleRole(role)}
+          className={disabled ? 'disabled' : ''}
+          data-role={role}>
+      {role}
+    </span>
   </li>
 )
 
 Role.propTypes = {
-  role: React.PropTypes.string,
-  disabled: React.PropTypes.boolean,
-  onToggleRole: React.PropTypes.func
+  role: PropTypes.string,
+  disabled: PropTypes.boolean,
+  onToggleRole: PropTypes.func
 }
 
 const mapStateToProps = ({ selectedRole }, { role }) => ({
