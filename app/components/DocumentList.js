@@ -1,16 +1,29 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { getVisibleDocuments } from '../reducers'
+import { getVisibleDocuments, getIsStale } from '../reducers'
 import { fetchDocuments } from '../actions'
 import Document from './Document'
 
 class DocumentList extends React.Component {
+  static propTypes = {
+    documents: React.PropTypes.arrayOf(React.PropTypes.object),
+    isStale: React.PropTypes.boolean,
+    isParsing: React.PropTypes.boolean,
+    root: React.PropTypes.string,
+    role: React.PropTypes.string,
+    fetchDocuments: React.PropTypes.func
+  }
+
   componentDidMount() {
     this.props.fetchDocuments(this.props.role || 'all')
   }
 
   componentDidUpdate(oldProps) {
-    if (oldProps.role !== this.props.role) {
+    if (this.props.isParsing) {
+      return
+    }
+
+    if (this.props.isStale || oldProps.role !== this.props.role) {
       this.props.fetchDocuments(this.props.role || 'all')
     }
   }
@@ -32,6 +45,8 @@ class DocumentList extends React.Component {
 
 const mapStateToProps = (state) => ({
   documents: getVisibleDocuments(state, state.selectedRole || 'all', state.query, state.options),
+  isStale: getIsStale(state, state.selectedRole || 'all'),
+  isParsing: state.modal.isParsing,
   root: state.settings.root,
   role: state.selectedRole
 })

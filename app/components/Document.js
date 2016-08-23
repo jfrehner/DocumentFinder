@@ -24,4 +24,9 @@ const Document = ({ file, root }) => {
   )
 }
 
+Document.propTypes = {
+  file: React.PropTypes.object,
+  root: React.PropTypes.string
+}
+
 export default Document

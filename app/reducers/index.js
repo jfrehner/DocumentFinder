@@ -44,3 +44,5 @@ export const getVisibleDocuments = (state, role, query, options) => {
     return filename.indexOf(query) !== -1
   })
 }
+
+export const getIsStale = (state, role) => state.listByRole[role].isStale

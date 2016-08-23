@@ -20,6 +20,10 @@ let Search = ({ onQueryChange }) => (
   </div>
 )
 
+Search.propTypes = {
+  onQueryChange: React.PropTypes.func
+}
+
 Search = connect(
   null,
   { onQueryChange: queryChange }

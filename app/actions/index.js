@@ -1,7 +1,7 @@
-import axios from 'axios'
 import { normalize } from 'normalizr'
-import * as schema from './schema'
+import { ipcRenderer } from 'electron'
 import { readFile } from 'fs'
+import * as schema from './schema'
 
 export const toggleRole = (role) => ({
   type: 'TOGGLE_ROLE',
@@ -39,6 +39,28 @@ const filterByRole = (documents, role) => {
     default:
       return documents.filter(doc => doc.path.indexOf(role) !== -1)
   }
+}
+
+export const parseData = (options) => (dispatch) => {
+  dispatch({
+    type: 'PARSE_DOCUMENTS_REQUEST'
+  })
+
+  ipcRenderer.send('parse', options)
+
+  return ipcRenderer.once('parsed', () => {
+    localStorage.setItem('lastParsed', JSON.stringify(new Date()))
+
+    dispatch({
+      type: 'UPDATE_SETTING',
+      key: 'lastParsed',
+      value: (new Date()).toString()
+    })
+
+    dispatch({
+      type: 'PARSE_DOCUMENTS_SUCCESS'
+    })
+  })
 }
 
 export const fetchDocuments = (role) => (dispatch) => {

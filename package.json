@@ -7,7 +7,6 @@
     "start": "./node_modules/.bin/electron ."
   },
   "dependencies": {
-    "axios": "^0.13.1",
     "electron-prebuilt": "^0.35.0",
     "normalizr": "^2.2.1",
     "react": "^15.3.1",

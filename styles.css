@@ -104,10 +104,21 @@ body::after {
 }
 
 .sidebar {
-    position: relative;
+    position: absolute;;
     width: 10%;
-    float: left;
+    left: 0;
+    bottom: 5em;
     background-color: #ededed;
+}
+
+.modal-toggle {
+    position: absolute;
+    left: 5%;
+    bottom: 1em;
+    height: 3em;
+    border-radius: 100%;
+    background-color: #fff;
+    transform: translateX(-50%);
 }
 
 .path {
@@ -140,7 +151,7 @@ LIST STYLES
 
 .roles-list li {
     position: relative;
-    height: 14.2857vh;
+    height: calc((100vh - 5em) / 7);
 }
 
 .roles-list [data-role] {
@@ -156,7 +167,7 @@ LIST STYLES
     width: auto;
     height: auto;
     display: table-cell;
-    line-height: 14.2857vh;
+    line-height: calc((100vh - 5em) / 7);
     -webkit-transform: translateZ(0);
 }
 
@@ -230,6 +241,10 @@ ICON STYLES
     text-transform: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-gear:before {
+  content: "\f013";
 }
 
 .icon-txt:before {
@@ -340,33 +355,47 @@ ICON STYLES
  * MODAL
  */
 
-.modal-footer {
+.is-parsing::after {
+  content: "Parsing data…";
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
   right: 0;
-  padding: 1.5em;
-  background-color: #f9f9f9;
-  border-top: 1px solid #dedede;
-  text-align: right;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  text-align: center;
+  line-height: 100vh;
+  z-index: 120;
+}
+
+.modal-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5em;
+    background-color: #f9f9f9;
+    border-top: 1px solid #dedede;
+    text-align: right;
 }
 
 .modal-description {
-  font-size: 0.75em;
-  line-height: 2;
-  color: #383838;
+    font-size: 0.75em;
+    line-height: 2;
+    color: #383838;
 }
 
 .modal-group {
-  margin-bottom: 1.5em;
+    margin-bottom: 1.5em;
 }
 
 .modal-group:last-child {
-  border-bottom: 0;
+    border-bottom: 0;
 }
 
 .modal-group p {
-  margin-bottom: 1.5em;
+    margin-bottom: 1.5em;
 }
 
 /**
@@ -374,23 +403,23 @@ ICON STYLES
  */
 
 input {
-  font: inherit;
+    font: inherit;
 }
 
 .text-input {
-  border: 1px solid #dedede;
-  border-radius: 3px;
-  padding: 1em 0.75em;
+    border: 1px solid #dedede;
+    border-radius: 3px;
+    padding: 1em 0.75em;
 }
 
 .text-input:focus {
-  outline: none;
-  border-color: #4cadeb;
+    outline: none;
+    border-color: #4cadeb;
 }
 
 .full-width {
-  display: block;
-  width: 100%;
+    display: block;
+    width: 100%;
 }
 
 /**
@@ -398,12 +427,13 @@ input {
  */
 
 [data-button] {
-  background-color: #4cadeb;
-  border-radius: 3px;
-  border: 0;
-  color: #fff;
-  font-weight: bold;
-  padding: 0.75em 1em;
-  font: inherit;
-  cursor: pointer;
+    background-color: #4cadeb;
+    border-radius: 3px;
+    border: 0;
+    color: #fff;
+    font-weight: bold;
+    padding: 0.75em 1em;
+    font: inherit;
+    cursor: pointer;
+    outline: none;
 }

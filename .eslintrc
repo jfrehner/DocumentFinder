@@ -14,7 +14,7 @@
   "extends": [ "eslint:recommended", "plugin:react/recommended" ],
   "plugins": [ "react" ],
   "rules": {
-    "complexity": ["error", 4],
+    "complexity": ["error", 5],
     "max-depth": ["error", 2]
   }
 }

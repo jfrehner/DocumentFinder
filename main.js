@@ -68,8 +68,6 @@ app.on('ready', () => {
       center: true
   })
 
-  mainWindow.openDevTools()
-
   mainWindow.loadURL('file://' + __dirname + '/index.html')
 
   mainWindow.on('closed', () => mainWindow = null)

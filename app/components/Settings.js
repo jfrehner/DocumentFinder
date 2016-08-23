@@ -1,10 +1,17 @@
 import React from 'react'
 import Modal from 'react-modal'
 import { connect } from 'react-redux'
-import { ipcRenderer } from 'electron'
-import { updateSetting, toggleModal } from '../actions'
+import { updateSetting, toggleModal, parseData } from '../actions'
 
 class Settings extends React.Component {
+  static propTypes = {
+    modal: React.PropTypes.object,
+    settings: React.PropTypes.object,
+    updateSetting: React.PropTypes.func,
+    parseData: React.PropTypes.func,
+    toggleModal: React.PropTypes.func
+  }
+
   static modalStyle = {
     overlay: {
       zIndex: 100
@@ -16,34 +23,36 @@ class Settings extends React.Component {
       bottom: 0,
       border: 0,
       backgroundColor: '#fff',
-      padding: '1.5em'
+      borderRadius: 0,
+      padding: '1.5em 1.5em 6em'
     }
   }
 
   render() {
-    const { settings, onUpdateSetting } = this.props
-    const lastParsed = new Date(settings.lastParsed)
+    const { modal, settings, updateSetting, parseData, toggleModal } = this.props
+    const parsed = new Date(settings.lastParsed)
 
     return (
-      <Modal isOpen={this.props.modal}
+      <Modal isOpen={modal.isOpen}
              style={Settings.modalStyle}>
+        <div className={modal.isParsing ? 'is-parsing' : ''} />
         <div className="modal-group">
           <h3>Root Folder</h3>
           <p className="modal-description">Select the root path that contains your document repository.</p>
-          <input type="text" className="text-input full-width" defaultValue={settings.root} onBlur={(ev) => onUpdateSetting('root', ev.target.value)} />
+          <input type="text" className="text-input full-width" defaultValue={settings.root} onBlur={(ev) => updateSetting('root', ev.target.value)} />
         </div>
         <div className="modal-group">
           <h3>Ignored Names</h3>
           <p className="modal-description">Enter a comma-separated list of folders or files to ignore. The items are matched as-is, so try not to include overly complex (i.e. multi-level) paths.</p>
-          <input type="text" className="text-input full-width" defaultValue={settings.ignore.join(', ')} onBlur={(ev) => onUpdateSetting('ignore', ev.target.value.split(/, ?/))} />
+          <input type="text" className="text-input full-width" defaultValue={settings.ignore.join(', ')} onBlur={(ev) => updateSetting('ignore', ev.target.value.split(/, ?/))} />
         </div>
         <div className="modal-group">
           <h3>Parsed Data</h3>
-          <p className="modal-description">Data was last parsed {`${lastParsed.getDate()}.${lastParsed.getMonth() + 1}.${lastParsed.getFullYear()}, ${lastParsed.getHours()}:${lastParsed.getMinutes()}`}.</p>
-          <button data-button onClick={() => ipcRenderer.send('parse', settings)}>Parse Data</button>
+          <p className="modal-description">Data was last parsed {`${parsed.getDate()}.${parsed.getMonth() + 1}.${parsed.getFullYear()}, ${parsed.getHours()}:${parsed.getMinutes()}`}.</p>
+          <button data-button onClick={() => parseData(settings)}>Parse Data</button>
         </div>
         <footer className="modal-footer">
-          <button data-button onClick={() => this.props.toggleModal()}>Close</button>
+          <button data-button onClick={() => toggleModal()}>Close</button>
         </footer>
       </Modal>
     )
@@ -51,6 +60,7 @@ class Settings extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
+  isParsing: state.isParsing,
   settings: state.settings,
   modal: state.modal
 })
@@ -58,7 +68,8 @@ const mapStateToProps = (state) => ({
 export default connect(
   mapStateToProps,
   {
-    onUpdateSetting: updateSetting,
-    toggleModal
+    updateSetting,
+    toggleModal,
+    parseData
   }
 )(Settings)

@@ -8,6 +8,12 @@ let Role = ({ role, disabled, onToggleRole }) => (
   </li>
 )
 
+Role.propTypes = {
+  role: React.PropTypes.string,
+  disabled: React.PropTypes.boolean,
+  onToggleRole: React.PropTypes.func
+}
+
 const mapStateToProps = ({ selectedRole }, { role }) => ({
   disabled: selectedRole !== null && selectedRole !== role
 })
