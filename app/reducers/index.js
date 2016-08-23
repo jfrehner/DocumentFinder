@@ -5,6 +5,7 @@ import settings from './settings'
 import query from './query'
 import byId, * as fromById from './byId'
 import createList, * as fromList from './createList'
+import modal from './modal'
 
 let roleFilters = {}
 
@@ -20,7 +21,8 @@ export default combineReducers({
   selectedRole,
   options,
   settings,
-  query
+  query,
+  modal
 })
 
 export const getVisibleDocuments = (state, role, query, options) => {

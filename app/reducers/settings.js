@@ -3,7 +3,7 @@ const settings = (state = {}, action) => {
     case 'UPDATE_SETTING':
       return {
         ...state,
-        [action.id]: action.value
+        [action.key]: action.value
       }
     default:
       return state

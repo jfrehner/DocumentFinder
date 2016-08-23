@@ -2,6 +2,7 @@ import React from 'react'
 import Sidebar from './Sidebar'
 import Search from './Search'
 import DocumentList from './DocumentList'
+import Settings from './Settings'
 
 const DocumentFinder = () => (
   <div className="app">
@@ -10,6 +11,7 @@ const DocumentFinder = () => (
       <Search />
       <DocumentList />
     </div>
+    <Settings />
   </div>
 )
 

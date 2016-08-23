@@ -14,9 +14,9 @@ const initialState = {
     caseSensitive: false
   },
   settings: {
-    root: localStorage.getItem('root'),
-    lastParsed: localStorage.getItem('lastParsed'),
-    ignore: JSON.parse(localStorage.getItem('ignore'))
+    root: (localStorage.getItem('root') || '').replace(/"/g, ''),
+    lastParsed: JSON.parse(localStorage.getItem('lastParsed')),
+    ignore: JSON.parse(localStorage.getItem('ignore') || '[]')
   }
 }
 

@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { normalize } from 'normalizr'
 import * as schema from './schema'
+import { readFile } from 'fs'
 
 export const toggleRole = (role) => ({
   type: 'TOGGLE_ROLE',
@@ -17,6 +18,20 @@ export const queryChange = (text) => ({
   text
 })
 
+export const toggleModal = () => ({
+  type: 'TOGGLE_MODAL'
+})
+
+export const updateSetting = (key, value) => (dispatch) => {
+  localStorage.setItem(key, JSON.stringify(value))
+
+  return dispatch({
+    type: 'UPDATE_SETTING',
+    key,
+    value
+  })
+}
+
 const filterByRole = (documents, role) => {
   switch (role) {
     case 'all':
@@ -32,18 +47,19 @@ export const fetchDocuments = (role) => (dispatch) => {
     role
   })
 
-  return axios.get('data.js')
-    .then(res => {
-      dispatch({
-        type: 'FETCH_DOCUMENTS_SUCCESS',
-        role,
-        response: normalize(filterByRole(res.data.documents, role), schema.arrayOfDocuments)
-      })
-    }).catch(err => {
+  return readFile('data.js', 'utf8', (err, data) => {
+    if (err) {
       dispatch({
         type: 'FETCH_DOCUMENTS_ERROR',
         role,
         error: err
       })
-    })
+    } else {
+      dispatch({
+        type: 'FETCH_DOCUMENTS_SUCCESS',
+        role,
+        response: normalize(filterByRole(JSON.parse(data).documents, role), schema.arrayOfDocuments)
+      })
+    }
+  })
 }

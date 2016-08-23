@@ -335,3 +335,75 @@ ICON STYLES
 .disabled {
     opacity: 0.2;
 }
+
+/**
+ * MODAL
+ */
+
+.modal-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.5em;
+  background-color: #f9f9f9;
+  border-top: 1px solid #dedede;
+  text-align: right;
+}
+
+.modal-description {
+  font-size: 0.75em;
+  line-height: 2;
+  color: #383838;
+}
+
+.modal-group {
+  margin-bottom: 1.5em;
+}
+
+.modal-group:last-child {
+  border-bottom: 0;
+}
+
+.modal-group p {
+  margin-bottom: 1.5em;
+}
+
+/**
+ * FORMS
+ */
+
+input {
+  font: inherit;
+}
+
+.text-input {
+  border: 1px solid #dedede;
+  border-radius: 3px;
+  padding: 1em 0.75em;
+}
+
+.text-input:focus {
+  outline: none;
+  border-color: #4cadeb;
+}
+
+.full-width {
+  display: block;
+  width: 100%;
+}
+
+/**
+ * BUTTONS
+ */
+
+[data-button] {
+  background-color: #4cadeb;
+  border-radius: 3px;
+  border: 0;
+  color: #fff;
+  font-weight: bold;
+  padding: 0.75em 1em;
+  font: inherit;
+  cursor: pointer;
+}

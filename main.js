@@ -2,7 +2,7 @@
 
 const electron = require('electron')
 const ipc = require('electron').ipcMain
-const dialog = require("dialog")
+const dialog = require('dialog')
 const recursive = require('recursive-readdir')
 const fs = require('fs')
 
@@ -12,18 +12,14 @@ const Shell = electron.shell
 const Menu = electron.Menu
 
 let mainWindow = null
-let folder = null;
+let folder = null
 
-ipc.on('selectFolder', function(event, args) {
-  console.log('selectFolder')
+ipc.on('parse', (event, args) => {
+  let folder = args.root
+  let ignore = args.ignore.filter(i => i !== '')
 
-  folder = dialog.showOpenDialog({
-    properties: [ 'openDirectory' ]
-  });
-
-  function ignoreFunc(file, stats) {
-
-    let allowed = [
+  const ignoreFunc = (file, stats) => {
+    const allowed = [
       'docx',
       'doc',
       'xlsx',
@@ -31,37 +27,36 @@ ipc.on('selectFolder', function(event, args) {
       'pptx',
       'ppt',
       'pdf',
-      'txt']
+      'txt'
+    ]
 
     let isValidFile = false
 
     if (file) {
-      isValidFile = allowed.filter((a) => {
-            return file.indexOf(a) !== -1
-          }).length > 0;
+      isValidFile = allowed.filter(a => file.indexOf(a) !== -1).length !== 0 && ignore.filter(i => file.indexOf(i) !== -1).length === 0
     }
 
-    return !(stats.isDirectory() && file.indexOf('.svn') === -1 || isValidFile);
+    return !(stats.isDirectory() || isValidFile)
   }
 
-  if (folder) {
+  recursive(folder, [ignoreFunc], (err, files) => {
+    let res = {
+      documents: []
+    }
 
-    recursive(folder[0], [ignoreFunc], function (err, files) {
+    let nextId = 0
 
-      let myFiles = {documentRoot: folder[0], data: []};
-      files.forEach((f) => myFiles.data.push({
-        "filename": f.substr(f.lastIndexOf('/') + 1),
-        "extension": f.substr(f.lastIndexOf('.') + 1),
-        "path": f,
-        "content": ""
-      }));
+    files.forEach((f) => res.documents.push({
+      id: nextId++,
+      filename: f.substr(f.lastIndexOf('/') + 1),
+      extension: f.substr(f.lastIndexOf('.') + 1),
+      path: f
+    }))
 
-      fs.writeFile('data.json', JSON.stringify(myFiles), () => {
-        console.log('wrote file!')
-        mainWindow.webContents.send('wroteFile');
-      })
+    fs.writeFile('data.js', JSON.stringify(res), () => {
+      mainWindow.webContents.send('parsed')
     })
-  }
+  })
 })
 
 app.on('window-all-closed', () => app.quit())
@@ -72,9 +67,10 @@ app.on('ready', () => {
       height: 600,
       center: true
   })
-  mainWindow.loadURL('file://' + __dirname + '/index.html')
 
-  //mainWindow.openDevTools();
+  mainWindow.openDevTools()
+
+  mainWindow.loadURL('file://' + __dirname + '/index.html')
 
   mainWindow.on('closed', () => mainWindow = null)
 
