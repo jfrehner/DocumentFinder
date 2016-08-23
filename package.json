@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "main": "main.js",
   "scripts": {
-    "parse": "php parse.php",
+    "build": "./node_modules/.bin/webpack",
     "start": "./node_modules/.bin/electron ."
   },
   "dependencies": {
